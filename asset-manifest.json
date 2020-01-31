@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/web-monosynth/static/css/main.b3cb845a.chunk.css",
+    "main.js": "/web-monosynth/static/js/main.75986389.chunk.js",
+    "main.js.map": "/web-monosynth/static/js/main.75986389.chunk.js.map",
+    "runtime-main.js": "/web-monosynth/static/js/runtime-main.b2d7dd05.js",
+    "runtime-main.js.map": "/web-monosynth/static/js/runtime-main.b2d7dd05.js.map",
+    "static/css/2.96479aa2.chunk.css": "/web-monosynth/static/css/2.96479aa2.chunk.css",
+    "static/js/2.fbabe720.chunk.js": "/web-monosynth/static/js/2.fbabe720.chunk.js",
+    "static/js/2.fbabe720.chunk.js.map": "/web-monosynth/static/js/2.fbabe720.chunk.js.map",
+    "index.html": "/web-monosynth/index.html",
+    "precache-manifest.0ea15761c3e2f84150021fd20d48be53.js": "/web-monosynth/precache-manifest.0ea15761c3e2f84150021fd20d48be53.js",
+    "service-worker.js": "/web-monosynth/service-worker.js",
+    "static/css/2.96479aa2.chunk.css.map": "/web-monosynth/static/css/2.96479aa2.chunk.css.map",
+    "static/css/main.b3cb845a.chunk.css.map": "/web-monosynth/static/css/main.b3cb845a.chunk.css.map",
+    "static/js/2.fbabe720.chunk.js.LICENSE": "/web-monosynth/static/js/2.fbabe720.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b2d7dd05.js",
+    "static/css/2.96479aa2.chunk.css",
+    "static/js/2.fbabe720.chunk.js",
+    "static/css/main.b3cb845a.chunk.css",
+    "static/js/main.75986389.chunk.js"
+  ]
+}
