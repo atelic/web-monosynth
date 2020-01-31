@@ -8,7 +8,8 @@ import "./synth.css";
 
 const WAVE_OPTIONS_DEFAULT = {
   type: "sine",
-  release: 0.6
+  release: 0.6,
+  volume: 0.75,
 };
 
 const MIN_OCTAVE = 0;
@@ -19,10 +20,17 @@ class Synth extends React.Component {
     super(props);
     this.state = {
       octave: 3,
+      distortionGain: 0,
       waveShape: "sine",
+      delayValues: {
+        mix: 0,
+        time: 0.4,
+        feedback: 0.2
+      },
       effects: {
         lowpassFilter: null,
-        distortion: null
+        distortion: null,
+        delay: null
       }
     };
     this.wave = new Pizzicato.Sound({
@@ -82,10 +90,10 @@ class Synth extends React.Component {
   distort = gain => {
     if (gain === 0) {
       // Remove distortion effect
-      this.setState({ effects: { ...this.state.effects, distortion: null } });
+      this.setState({ effects: { ...this.state.effects, distortion: null }, distortionGain: 0 });
     } else {
       const distortion = new Pizzicato.Effects.Distortion({ gain });
-      this.setState({ effects: { ...this.state.effects, distortion } });
+      this.setState({ effects: { ...this.state.effects, distortion }, distortionGain: gain });
     }
   };
 
@@ -101,11 +109,45 @@ class Synth extends React.Component {
     this.wave.release = r;
   };
 
+  delayTime = time => {
+    const newDelay = new Pizzicato.Effects.Delay({
+      ...this.state.delayValues,
+      time
+    });
+    this.setState({
+      effects: { ...this.state.effects, delay: newDelay },
+      delayValues: { ...this.state.delayValues, time }
+    });
+  };
+
+  delayFeedback = feedback => {
+    const newDelay = new Pizzicato.Effects.Delay({
+      ...this.state.delayValues,
+      feedback
+    });
+    this.setState({
+      effects: { ...this.state.effects, delay: newDelay },
+      delayValues: { ...this.state.delayValues, feedback }
+    });
+  };
+
+  delayMix = mix => {
+    const newDelay = new Pizzicato.Effects.Delay({
+      ...this.state.delayValues,
+      mix
+    });
+    this.setState({
+      effects: { ...this.state.effects, delay: newDelay },
+      delayValues: { ...this.state.delayValues, mix }
+    });
+  };
+
   handleWaveChange = event => {
     this.wave = new Pizzicato.Sound({
       source: "wave",
       options: { type: event.target.value, release: 0.6 }
     });
+    this.addEffects();
   };
 
   addEffects = () => {
@@ -122,6 +164,7 @@ class Synth extends React.Component {
 
   render() {
     this.addEffects();
+    console.log(this.wave.effects);
     return (
       <div className="App">
         <h3>Play using your keyboard! Change octave with Z and X</h3>
@@ -205,11 +248,41 @@ class Synth extends React.Component {
         </div>
         <div className="delay">
           <h2>Delay</h2>
+          <div className='delay-time'>
+            Time: {this.state.delayValues.time} sec
+            <Slider
+              max={1}
+              min={0}
+              step={0.01}
+              defaultValue={this.state.delayValues.time}
+              onChange={a => this.delayTime(a)}
+            />
+          </div>
+          <div className='delay-feedback'>
+            Feedback: {this.state.delayValues.feedback * 100}%
+            <Slider
+              max={1}
+              min={0}
+              step={0.01}
+              defaultValue={this.state.delayValues.feedback}
+              onChange={a => this.delayFeedback(a)}
+            />
+          </div>
+          <div className='delay-mix'>
+            Mix: {this.state.delayValues.mix * 100}%
+            <Slider
+              max={1}
+              min={0}
+              step={0.01}
+              defaultValue={this.state.delayValues.mix}
+              onChange={a => this.delayMix(a)}
+            />
+          </div>
         </div>
 
         <div className="distortion">
           <h2>Distortion</h2>
-          Gain:
+          Gain: {this.state.distortionGain * 100}%
           <Slider
             max={1}
             min={0}

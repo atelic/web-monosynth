@@ -42,6 +42,14 @@
     padding: 1rem;
 }
 
+.delay-time {
+    margin-bottom: 2rem;
+}
+
+.delay-feedback {
+    margin-bottom: 2rem;
+}
+
 .scope {
     grid-area: 2 / 1 / 3 / 3;
     border: 1px solid black;
