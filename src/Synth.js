@@ -11,19 +11,19 @@ const WAVE_OPTIONS_DEFAULT = {
   release: 0.6
 };
 
+const MIN_OCTAVE = 0;
+const MAX_OCTAVE = 5;
+
 class Synth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       octave: 3,
-      distortionGain: 0,
-      filterFreq: 22000,
       waveShape: "sine",
-      lowpassFilter: new Pizzicato.Effects.LowPassFilter({ frequency: 22000 }),
-      distortion: new Pizzicato.Effects.Distortion({
-        gain: 0.3,
-        type: "distortion"
-      }) // null
+      effects: {
+        lowpassFilter: null,
+        distortion: null
+      }
     };
     this.wave = new Pizzicato.Sound({
       source: "wave",
@@ -34,22 +34,20 @@ class Synth extends React.Component {
 
   handleKeyDown(event) {
     if (Object.keys(NOTE_FREQ_MAP).indexOf(event.keyCode.toString()) !== -1) {
-      console.log(this.state.octave);
       this.wave.frequency = NOTE_FREQ_MAP[event.keyCode][this.state.octave];
-      console.log(this.wave);
       this.wave.play();
     }
     if (event.keyCode === 90) {
       // Z key pushes the octave down
       const newOct = this.state.octave - 1;
-      if (newOct >= 0) {
+      if (newOct >= MIN_OCTAVE) {
         this.setState({ octave: this.state.octave - 1 });
       }
     }
     if (event.keyCode === 88) {
       // X key pushes the octave up
       const newOct = this.state.octave + 1;
-      if (newOct <= 5) {
+      if (newOct <= MAX_OCTAVE) {
         this.setState({ octave: newOct });
       }
     }
@@ -67,19 +65,27 @@ class Synth extends React.Component {
   }
 
   lowpass = freq => {
-    this.setState({
-      lowpassFilter: new Pizzicato.Effects.LowPassFilter({ frequency: freq })
-    });
-    console.log(this.state);
+    console.log("not implemented");
+    // const lowpassFilter = new Pizzicato.Effects.LowPassFilter({
+    //   frequency: 400,
+    //   peak: 10
+    // });
+
+    // const newEffects = {...this.state.effects, lowpassFilter};
+    // console.log(newEffects);
+    // this.setState({
+    //   effects: { ...this.state.effects, lowpassFilter }
+    // });
+    // console.log(this.state);
   };
 
   distort = gain => {
-    console.log(gain);
     if (gain === 0) {
-      // this.wave.removeEffect(this.state.distortion);
-      this.setState({ distortion: null });
+      // Remove distortion effect
+      this.setState({ effects: { ...this.state.effects, distortion: null } });
     } else {
-      this.setState({ distortion: new Pizzicato.Effects.Distortion({ gain }) });
+      const distortion = new Pizzicato.Effects.Distortion({ gain });
+      this.setState({ effects: { ...this.state.effects, distortion } });
     }
   };
 
@@ -95,15 +101,27 @@ class Synth extends React.Component {
     this.wave.release = r;
   };
 
-  render() {
-    const handleWaveChange = event => {
-      console.log(event.target.value);
-      this.wave = new Pizzicato.Sound({
-        source: "wave",
-        options: { type: event.target.value, release: 0.6 }
-      });
-    };
+  handleWaveChange = event => {
+    this.wave = new Pizzicato.Sound({
+      source: "wave",
+      options: { type: event.target.value, release: 0.6 }
+    });
+  };
 
+  addEffects = () => {
+    // Empty effects array and remove references
+    this.wave.effects.length = 0;
+
+    for (let key in this.state.effects) {
+      const effect = this.state.effects[key];
+      if (effect) {
+        this.wave.addEffect(effect);
+      }
+    }
+  };
+
+  render() {
+    this.addEffects();
     return (
       <div className="App">
         <h3>Play using your keyboard! Change octave with Z and X</h3>
@@ -114,7 +132,7 @@ class Synth extends React.Component {
             <br />
             <select
               id="wave-select"
-              onChange={handleWaveChange}
+              onChange={this.handleWaveChange}
               value={this.waveShape}
             >
               <option value="sine">Sine</option>
@@ -157,6 +175,7 @@ class Synth extends React.Component {
 
         <div className="filters">
           <h2>Filters:</h2>
+          <p>(Not working)</p>
           <div className="filters-lowpass">
             Low pass filter:
             <Slider
