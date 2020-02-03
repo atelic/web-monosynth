@@ -9,7 +9,7 @@ import "./synth.css";
 const WAVE_OPTIONS_DEFAULT = {
   type: "sine",
   release: 0.6,
-  volume: 0.75,
+  volume: 0.75
 };
 
 const MIN_OCTAVE = 0;
@@ -19,6 +19,7 @@ class Synth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeKey: null,
       octave: 3,
       distortionGain: 0,
       waveShape: "sine",
@@ -44,6 +45,7 @@ class Synth extends React.Component {
     if (Object.keys(NOTE_FREQ_MAP).indexOf(event.keyCode.toString()) !== -1) {
       this.wave.frequency = NOTE_FREQ_MAP[event.keyCode][this.state.octave];
       this.wave.play();
+      this.setState({activeKey: event.keyCode}, () => console.log(this.state));
     }
     if (event.keyCode === 90) {
       // Z key pushes the octave down
@@ -63,6 +65,7 @@ class Synth extends React.Component {
 
   handleKeyUp(event) {
     if (Object.keys(NOTE_FREQ_MAP).indexOf(event.keyCode.toString()) !== -1) {
+      this.setState({activeKey: null})
       this.wave.stop();
     }
   }
@@ -90,10 +93,16 @@ class Synth extends React.Component {
   distort = gain => {
     if (gain === 0) {
       // Remove distortion effect
-      this.setState({ effects: { ...this.state.effects, distortion: null }, distortionGain: 0 });
+      this.setState({
+        effects: { ...this.state.effects, distortion: null },
+        distortionGain: 0
+      });
     } else {
       const distortion = new Pizzicato.Effects.Distortion({ gain });
-      this.setState({ effects: { ...this.state.effects, distortion }, distortionGain: gain });
+      this.setState({
+        effects: { ...this.state.effects, distortion },
+        distortionGain: gain
+      });
     }
   };
 
@@ -243,12 +252,25 @@ class Synth extends React.Component {
           <h2>Reverb</h2>
         </div>
         <div className="scope">
-          Oscilliscope or something will go here? Maybe a keyboard
-          visualization?
+          <div className={`div1 white-key ${this.state.activeKey == 65 ? 'active' : ''}`}> C </div>
+          <div className="div2 white-key"> D </div>
+          <div className="div3 white-key"> E </div>
+          <div className="div4 white-key"> F </div>
+          <div className="div5 white-key"> G </div>
+          <div className="div6 white-key"> A </div>
+          <div className="div7 white-key"> B </div>
+          <div className="div8 white-key"> C </div>
+          <div className="div9 white-key"> D </div>
+          <div className="div10 black-key"> C# </div>
+          <div className="div11 black-key"> D# </div>
+          <div className="div12 black-key"> F# </div>
+          <div className="div13 black-key"> G# </div>
+          <div className="div14 black-key"> A# </div>
+          <div className="div15 black-key"> C#  </div>
         </div>
         <div className="delay">
           <h2>Delay</h2>
-          <div className='delay-time'>
+          <div className="delay-time">
             Time: {this.state.delayValues.time} sec
             <Slider
               max={1}
@@ -258,7 +280,7 @@ class Synth extends React.Component {
               onChange={a => this.delayTime(a)}
             />
           </div>
-          <div className='delay-feedback'>
+          <div className="delay-feedback">
             Feedback: {this.state.delayValues.feedback * 100}%
             <Slider
               max={1}
@@ -268,7 +290,7 @@ class Synth extends React.Component {
               onChange={a => this.delayFeedback(a)}
             />
           </div>
-          <div className='delay-mix'>
+          <div className="delay-mix">
             Mix: {this.state.delayValues.mix * 100}%
             <Slider
               max={1}
