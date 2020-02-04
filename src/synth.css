@@ -47,7 +47,7 @@
     margin-bottom: 2rem;
 }
 
-.scope {
+.keyboard {
     grid-area: 2 / 1 / 3 / 3;
     border: 1px solid black;
     padding: 1rem;
@@ -59,7 +59,7 @@
     padding: 1rem;
 }
 
-.scope {
+.keyboard {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(2, 1fr);

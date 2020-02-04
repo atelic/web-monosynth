@@ -2,6 +2,7 @@ import React from "react";
 import Pizzicato from "pizzicato";
 import Slider from "rc-slider";
 import { NOTE_FREQ_MAP } from "./constants";
+import { Keyboard } from './Keyboard';
 
 import "rc-slider/assets/index.css";
 import "./synth.css";
@@ -19,7 +20,7 @@ class Synth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeKey: null,
+      activeKeyCode: null,
       octave: 3,
       distortionGain: 0,
       waveShape: "sine",
@@ -41,11 +42,20 @@ class Synth extends React.Component {
     });
   }
 
+  playNote(keyCode) {
+      this.wave.frequency = NOTE_FREQ_MAP[keyCode][this.state.octave];
+      this.wave.play();
+      this.setState({activeKeyCode: keyCode}, () => console.log(this.state));
+  }
+
+  stopNote() {
+    this.setState({ activeKeyCode: null });
+    this.wave.stop();
+  }
+
   handleKeyDown(event) {
     if (Object.keys(NOTE_FREQ_MAP).indexOf(event.keyCode.toString()) !== -1) {
-      this.wave.frequency = NOTE_FREQ_MAP[event.keyCode][this.state.octave];
-      this.wave.play();
-      this.setState({activeKey: event.keyCode}, () => console.log(this.state));
+      this.playNote(event.keyCode);
     }
     if (event.keyCode === 90) {
       // Z key pushes the octave down
@@ -65,8 +75,7 @@ class Synth extends React.Component {
 
   handleKeyUp(event) {
     if (Object.keys(NOTE_FREQ_MAP).indexOf(event.keyCode.toString()) !== -1) {
-      this.setState({activeKey: null})
-      this.wave.stop();
+      this.stopNote();
     }
   }
 
@@ -251,23 +260,11 @@ class Synth extends React.Component {
         <div className="reverb">
           <h2>Reverb</h2>
         </div>
-        <div className="scope">
-          <div className={`div1 white-key ${this.state.activeKey == 65 ? 'active' : ''}`}> C </div>
-          <div className="div2 white-key"> D </div>
-          <div className="div3 white-key"> E </div>
-          <div className="div4 white-key"> F </div>
-          <div className="div5 white-key"> G </div>
-          <div className="div6 white-key"> A </div>
-          <div className="div7 white-key"> B </div>
-          <div className="div8 white-key"> C </div>
-          <div className="div9 white-key"> D </div>
-          <div className="div10 black-key"> C# </div>
-          <div className="div11 black-key"> D# </div>
-          <div className="div12 black-key"> F# </div>
-          <div className="div13 black-key"> G# </div>
-          <div className="div14 black-key"> A# </div>
-          <div className="div15 black-key"> C#  </div>
-        </div>
+        <Keyboard
+          onMouseDown={this.playNote.bind(this)}
+          onMouseUp={this.stopNote.bind(this)}
+          activeKeyCode={this.state.activeKeyCode}
+        />
         <div className="delay">
           <h2>Delay</h2>
           <div className="delay-time">
