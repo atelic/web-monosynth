@@ -21,7 +21,7 @@ class Synth extends React.Component {
     super(props);
     this.state = {
       activeKeyCode: null,
-      octave: 3,
+      octave: 4,
       distortionGain: 0,
       waveShape: "sine",
       delayValues: {
@@ -29,10 +29,17 @@ class Synth extends React.Component {
         time: 0.4,
         feedback: 0.2
       },
+      reverbValues: {
+        time: 0,
+        decay: 0,
+        mix: 0,
+        reverse: false,
+      },
       effects: {
         lowpassFilter: null,
         distortion: null,
-        delay: null
+        delay: null,
+        reverb: null,
       }
     };
     this.wave = new Pizzicato.Sound({
@@ -160,6 +167,18 @@ class Synth extends React.Component {
     });
   };
 
+  reverbTime = time => {
+    console.log(time);
+  };
+
+  reverbDecay = decay => {
+    console.log(decay);
+  };
+
+  reverbDecay = mix => {
+    console.log(mix);
+  };
+
   handleWaveChange = event => {
     this.wave = new Pizzicato.Sound({
       source: "wave",
@@ -259,6 +278,36 @@ class Synth extends React.Component {
 
         <div className="reverb">
           <h2>Reverb</h2>
+          <div className="reverb-time">
+            Time: {this.state.reverbValues.time}
+            <Slider
+              max={10}
+              min={0.0001}
+              step={0.1}
+              defaultValue={this.state.reverbValues.time}
+              onChange={a => this.reverbTime(a)}
+            />
+          </div>
+          <div className="reverb-decay">
+            Decay: {this.state.reverbValues.decay * 100}%
+            <Slider
+              max={10}
+              min={0}
+              step={0.1}
+              defaultValue={this.state.reverbValues.decay}
+              onChange={a => this.reverbDecay(a)}
+            />
+          </div>
+          <div className="reverb-mix">
+            Mix: {this.state.reverbValues.mix * 100}%
+            <Slider
+              max={1}
+              min={0}
+              step={0.1}
+              defaultValue={this.state.reverbValues.mix}
+              onChange={a => this.reverbMix(a)}
+            />
+          </div>
         </div>
         <Keyboard
           onMouseDown={this.playNote.bind(this)}
