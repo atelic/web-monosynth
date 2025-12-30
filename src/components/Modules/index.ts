@@ -1,0 +1,5 @@
+export { MasterModule } from './MasterModule'
+export { FilterModule } from './FilterModule'
+export { ReverbModule } from './ReverbModule'
+export { DelayModule } from './DelayModule'
+export { DistortionModule } from './DistortionModule'
