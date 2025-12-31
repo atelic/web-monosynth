@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://atelic.github.io/web-monosynth",
+  "homepage": "https://atelic.github.io/web-polysynth",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
