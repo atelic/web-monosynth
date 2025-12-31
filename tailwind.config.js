@@ -17,6 +17,7 @@ export default {
           accent: '#ff764d',
           'accent-hover': '#ff8a66',
           'accent-dim': '#cc5e3d',
+          orange: '#ff764d',
           green: '#1db954',
           'green-dim': '#1a9e48',
           yellow: '#f5c542',

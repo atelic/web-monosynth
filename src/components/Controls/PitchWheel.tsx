@@ -79,10 +79,10 @@ export function PitchWheel({
         onMouseDown={handleMouseDown}
       >
         {/* Center line */}
-        <div className="absolute top-1/2 left-0 right-0 h-px bg-ableton-orange" />
+        <div className="absolute top-1/2 left-0 right-0 h-px bg-ableton-accent" />
         {/* Fill from center */}
         <div
-          className="absolute left-1 right-1 bg-ableton-orange/30"
+          className="absolute left-1 right-1 bg-ableton-accent/30"
           style={{
             top: value > 0 ? `${50 - (value * 50)}%` : '50%',
             bottom: value < 0 ? `${50 + (value * 50)}%` : '50%',
@@ -94,12 +94,12 @@ export function PitchWheel({
             <div key={i} className="w-full h-px bg-ableton-bg opacity-50" />
           ))}
         </div>
-        {/* Handle */}
+        {/* Handle - clamp position to stay within bounds (6px handle half-height) */}
         <div
           className={`absolute left-0 right-0 h-3 rounded-sm shadow-md transition-colors ${
-            isDragging ? 'bg-ableton-orange' : 'bg-ableton-text'
+            isDragging ? 'bg-ableton-accent' : 'bg-ableton-text'
           }`}
-          style={{ bottom: `calc(${handlePosition}% - 6px)` }}
+          style={{ bottom: `clamp(0px, calc(${handlePosition}% - 6px), calc(100% - 12px))` }}
         />
       </div>
       <span className="text-xs text-ableton-text-secondary font-medium">{label}</span>
