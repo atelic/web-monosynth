@@ -1,5 +1,5 @@
 import { Knob, ToggleButton, PitchWheel } from '../Controls'
-import { GlideParams } from '../../types/synth.types'
+import { GlideParams, DEFAULT_GLIDE_PARAMS, DEFAULT_PITCH_BEND_RANGE } from '../../types/synth.types'
 
 interface PitchModuleProps {
   glideParams: GlideParams
@@ -44,6 +44,7 @@ export function PitchModule({
             onChange={onPitchBendRangeChange}
             size="sm"
             displayValue={(v: number) => `${Math.round(v)} st`}
+            defaultValue={DEFAULT_PITCH_BEND_RANGE}
           />
         </div>
 
@@ -64,6 +65,7 @@ export function PitchModule({
             onChange={onGlideTimeChange}
             size="sm"
             displayValue={(v: number) => `${(v * 1000).toFixed(0)}ms`}
+            defaultValue={DEFAULT_GLIDE_PARAMS.time}
           />
         </div>
       </div>

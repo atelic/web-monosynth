@@ -1,4 +1,5 @@
 import { Knob } from '../Controls'
+import { DEFAULT_TEMPO_PARAMS } from '../../types/synth.types'
 
 interface TempoModuleProps {
   bpm: number
@@ -32,6 +33,7 @@ export function TempoModule({
             onChange={onBpmChange}
             size="md"
             displayValue={(v: number) => `${Math.round(v)}`}
+            defaultValue={DEFAULT_TEMPO_PARAMS.bpm}
           />
         </div>
 

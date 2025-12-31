@@ -1,6 +1,10 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
-import { FilterEnvelopeParams } from '../../types/synth.types'
+import {
+  FilterEnvelopeParams,
+  DEFAULT_EFFECT_PARAMS,
+  DEFAULT_FILTER_ENVELOPE_PARAMS,
+} from '../../types/synth.types'
 
 interface FilterModuleProps {
   lowpassFreq: number
@@ -65,6 +69,7 @@ export function FilterModule({
             unit="Hz"
             size="sm"
             displayValue={formatFrequency}
+            defaultValue={DEFAULT_EFFECT_PARAMS.lowpass.frequency}
           />
           <Knob
             value={lowpassQ}
@@ -74,6 +79,7 @@ export function FilterModule({
             label="LP Res"
             size="sm"
             displayValue={(v) => v.toFixed(1)}
+            defaultValue={DEFAULT_EFFECT_PARAMS.lowpass.Q}
           />
         </div>
         <div className="flex gap-3">
@@ -86,6 +92,7 @@ export function FilterModule({
             unit="Hz"
             size="sm"
             displayValue={formatFrequency}
+            defaultValue={DEFAULT_EFFECT_PARAMS.highpass.frequency}
           />
           <Knob
             value={highpassQ}
@@ -95,6 +102,7 @@ export function FilterModule({
             label="HP Res"
             size="sm"
             displayValue={(v) => v.toFixed(1)}
+            defaultValue={DEFAULT_EFFECT_PARAMS.highpass.Q}
           />
         </div>
 
@@ -110,6 +118,7 @@ export function FilterModule({
               label="A"
               size="sm"
               displayValue={formatTime}
+              defaultValue={DEFAULT_FILTER_ENVELOPE_PARAMS.attack}
             />
             <Knob
               value={filterEnvelope.decay}
@@ -119,6 +128,7 @@ export function FilterModule({
               label="D"
               size="sm"
               displayValue={formatTime}
+              defaultValue={DEFAULT_FILTER_ENVELOPE_PARAMS.decay}
             />
             <Knob
               value={filterEnvelope.sustain}
@@ -128,6 +138,7 @@ export function FilterModule({
               label="S"
               size="sm"
               displayValue={(v) => `${(v * 100).toFixed(0)}%`}
+              defaultValue={DEFAULT_FILTER_ENVELOPE_PARAMS.sustain}
             />
             <Knob
               value={filterEnvelope.release}
@@ -137,6 +148,7 @@ export function FilterModule({
               label="R"
               size="sm"
               displayValue={formatTime}
+              defaultValue={DEFAULT_FILTER_ENVELOPE_PARAMS.release}
             />
             <Knob
               value={filterEnvelope.amount}
@@ -146,6 +158,7 @@ export function FilterModule({
               label="Amt"
               size="sm"
               displayValue={(v) => `${(v * 100).toFixed(0)}%`}
+              defaultValue={DEFAULT_FILTER_ENVELOPE_PARAMS.amount}
             />
           </div>
         </div>

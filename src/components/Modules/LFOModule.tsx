@@ -1,5 +1,5 @@
 import { Knob, ToggleButton, SegmentedSelector } from '../Controls'
-import { LFOWaveform, LFOParams, ModulationRouting, ModulationTarget } from '../../types/synth.types'
+import { LFOWaveform, LFOParams, ModulationRouting, ModulationTarget, DEFAULT_LFO_PARAMS } from '../../types/synth.types'
 
 interface LFOModuleProps {
   lfoParams: LFOParams
@@ -56,6 +56,7 @@ export function LFOModule({
             onChange={onRateChange}
             size="sm"
             displayValue={(v: number) => `${v.toFixed(1)} Hz`}
+            defaultValue={DEFAULT_LFO_PARAMS.rate}
           />
           <Knob
             label="Depth"
@@ -64,6 +65,7 @@ export function LFOModule({
             max={1}
             onChange={onDepthChange}
             size="sm"
+            defaultValue={DEFAULT_LFO_PARAMS.depth}
           />
         </div>
 
@@ -97,6 +99,7 @@ export function LFOModule({
                 max={1}
                 onChange={(v) => handleRoutingAmountChange('filterCutoff', v)}
                 size="sm"
+                defaultValue={0}
               />
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
+import { DEFAULT_EFFECT_PARAMS } from '../../types/synth.types'
 
 interface ReverbModuleProps {
   decay: number
@@ -26,6 +27,7 @@ export function ReverbModule({
         label="Decay"
         unit="s"
         displayValue={(v) => v.toFixed(1)}
+        defaultValue={DEFAULT_EFFECT_PARAMS.reverb.decay}
       />
       <Knob
         value={wet}
@@ -34,6 +36,7 @@ export function ReverbModule({
         onChange={onWetChange}
         label="Mix"
         displayValue={(v) => `${Math.round(v * 100)}%`}
+        defaultValue={DEFAULT_EFFECT_PARAMS.reverb.wet}
       />
     </ModulePanel>
   )

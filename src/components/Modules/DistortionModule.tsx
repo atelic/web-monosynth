@@ -1,5 +1,6 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
+import { DEFAULT_EFFECT_PARAMS } from '../../types/synth.types'
 
 interface DistortionModuleProps {
   amount: number
@@ -25,6 +26,7 @@ export function DistortionModule({
         onChange={onAmountChange}
         label="Drive"
         displayValue={(v) => `${Math.round(v * 100)}%`}
+        defaultValue={DEFAULT_EFFECT_PARAMS.distortion.amount}
       />
       <Knob
         value={wet}
@@ -33,6 +35,7 @@ export function DistortionModule({
         onChange={onWetChange}
         label="Mix"
         displayValue={(v) => `${Math.round(v * 100)}%`}
+        defaultValue={DEFAULT_EFFECT_PARAMS.distortion.wet}
       />
     </ModulePanel>
   )

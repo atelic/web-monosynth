@@ -13,11 +13,11 @@ export function ToggleButton({ label, value, onChange, size = 'md' }: ToggleButt
       <button
         className={`
           ${sizeClasses}
-          rounded font-medium uppercase tracking-wide transition-all
+          rounded font-bold uppercase tracking-wide transition-all
           ${
             value
-              ? 'bg-ableton-orange text-ableton-bg shadow-inner'
-              : 'bg-ableton-surface text-ableton-text-secondary hover:bg-ableton-surface-light'
+              ? 'bg-ableton-green text-white ring-2 ring-ableton-green/50 shadow-[0_0_8px_rgba(29,185,84,0.4)]'
+              : 'bg-ableton-surface text-ableton-text-muted hover:bg-ableton-surface-light hover:text-ableton-text-dim'
           }
         `}
         onClick={() => onChange(!value)}

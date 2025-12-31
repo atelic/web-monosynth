@@ -1,6 +1,6 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob, WaveformSelector, OctaveDisplay, ToggleButton } from '../Controls'
-import { WaveformType } from '../../types/synth.types'
+import { WaveformType, DEFAULT_MASTER_PARAMS } from '../../types/synth.types'
 
 interface MasterModuleProps {
   volume: number
@@ -43,6 +43,7 @@ export function MasterModule({
         label="Volume"
         unit="dB"
         displayValue={(v) => v.toFixed(0)}
+        defaultValue={DEFAULT_MASTER_PARAMS.volume}
       />
       <Knob
         value={attack}
@@ -52,6 +53,7 @@ export function MasterModule({
         label="Attack"
         unit="s"
         displayValue={(v) => v.toFixed(2)}
+        defaultValue={DEFAULT_MASTER_PARAMS.attack}
       />
       <Knob
         value={release}
@@ -61,6 +63,7 @@ export function MasterModule({
         label="Release"
         unit="s"
         displayValue={(v) => v.toFixed(2)}
+        defaultValue={DEFAULT_MASTER_PARAMS.release}
       />
       <WaveformSelector value={waveform} onChange={onWaveformChange} />
       <OctaveDisplay octave={octave} onOctaveChange={onOctaveChange} />

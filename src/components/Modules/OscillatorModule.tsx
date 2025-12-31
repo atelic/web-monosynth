@@ -1,5 +1,5 @@
 import { Knob, WaveformSelector, SegmentedSelector } from '../Controls'
-import { WaveformType, NoiseType, OscillatorParams } from '../../types/synth.types'
+import { WaveformType, NoiseType, OscillatorParams, DEFAULT_OSCILLATOR_PARAMS } from '../../types/synth.types'
 
 interface OscillatorModuleProps {
   params: OscillatorParams
@@ -41,6 +41,7 @@ export function OscillatorModule({
               max={1}
               onChange={onSubOscLevelChange}
               size="sm"
+              defaultValue={DEFAULT_OSCILLATOR_PARAMS.subOscLevel}
             />
             <SegmentedSelector
               label="Octave"
@@ -66,6 +67,7 @@ export function OscillatorModule({
               max={1}
               onChange={onNoiseLevelChange}
               size="sm"
+              defaultValue={DEFAULT_OSCILLATOR_PARAMS.noiseLevel}
             />
             <SegmentedSelector
               label="Type"

@@ -1,5 +1,5 @@
 import { Knob } from '../Controls'
-import { PhaserParams } from '../../types/synth.types'
+import { PhaserParams, DEFAULT_PHASER_PARAMS } from '../../types/synth.types'
 
 interface PhaserModuleProps {
   params: PhaserParams
@@ -29,6 +29,7 @@ export function PhaserModule({
           onChange={onRateChange}
           size="sm"
           displayValue={(v: number) => `${v.toFixed(1)} Hz`}
+          defaultValue={DEFAULT_PHASER_PARAMS.rate}
         />
         <Knob
           label="Depth"
@@ -37,6 +38,7 @@ export function PhaserModule({
           max={1}
           onChange={onDepthChange}
           size="sm"
+          defaultValue={DEFAULT_PHASER_PARAMS.depth}
         />
         <Knob
           label="Mix"
@@ -45,6 +47,7 @@ export function PhaserModule({
           max={1}
           onChange={onWetChange}
           size="sm"
+          defaultValue={DEFAULT_PHASER_PARAMS.wet}
         />
       </div>
     </div>

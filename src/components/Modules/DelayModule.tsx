@@ -1,5 +1,6 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
+import { DEFAULT_EFFECT_PARAMS } from '../../types/synth.types'
 
 interface DelayModuleProps {
   time: number
@@ -30,6 +31,7 @@ export function DelayModule({
         label="Time"
         unit="s"
         displayValue={(v) => v.toFixed(2)}
+        defaultValue={DEFAULT_EFFECT_PARAMS.delay.time}
       />
       <Knob
         value={feedback}
@@ -38,6 +40,7 @@ export function DelayModule({
         onChange={onFeedbackChange}
         label="Feedback"
         displayValue={(v) => `${Math.round(v * 100)}%`}
+        defaultValue={DEFAULT_EFFECT_PARAMS.delay.feedback}
       />
       <Knob
         value={wet}
@@ -46,6 +49,7 @@ export function DelayModule({
         onChange={onWetChange}
         label="Mix"
         displayValue={(v) => `${Math.round(v * 100)}%`}
+        defaultValue={DEFAULT_EFFECT_PARAMS.delay.wet}
       />
     </ModulePanel>
   )

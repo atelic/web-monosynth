@@ -381,9 +381,24 @@ function SynthUI() {
         />
       </div>
 
-      {/* Controls grid - compact 6-column layout */}
+      {/* Controls grid - compact 6-column layout following classic synth signal flow */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        {/* Sound sources */}
+        {/* Row 1: Sound Generation & Shaping (signal flow: Master/Amp → Osc → Pitch → Filter → LFO) */}
+        <MasterModule
+          volume={params.master.volume}
+          attack={params.master.attack}
+          release={params.master.release}
+          waveform={params.master.waveform}
+          octave={params.master.octave}
+          mono={params.master.mono}
+          onVolumeChange={handleVolumeChange}
+          onAttackChange={handleAttackChange}
+          onReleaseChange={handleReleaseChange}
+          onWaveformChange={handleWaveformChange}
+          onOctaveChange={handleOctaveValueChange}
+          onMonoChange={handleMonoChange}
+        />
+
         <OscillatorModule
           params={params.oscillator}
           onWaveformChange={handleWaveformChange}
@@ -403,15 +418,6 @@ function SynthUI() {
           onPitchBendRangeChange={handlePitchBendRangeChange}
         />
 
-        <LFOModule
-          lfoParams={params.lfo}
-          modRouting={params.modRouting}
-          onRateChange={handleLFORateChange}
-          onDepthChange={handleLFODepthChange}
-          onWaveformChange={handleLFOWaveformChange}
-          onRoutingChange={handleRoutingChange}
-        />
-
         <FilterModule
           lowpassFreq={params.effects.lowpass.frequency}
           lowpassQ={params.effects.lowpass.Q}
@@ -429,22 +435,25 @@ function SynthUI() {
           onFilterEnvAmountChange={handleFilterEnvAmountChange}
         />
 
-        <MasterModule
-          volume={params.master.volume}
-          attack={params.master.attack}
-          release={params.master.release}
-          waveform={params.master.waveform}
-          octave={params.master.octave}
-          mono={params.master.mono}
-          onVolumeChange={handleVolumeChange}
-          onAttackChange={handleAttackChange}
-          onReleaseChange={handleReleaseChange}
-          onWaveformChange={handleWaveformChange}
-          onOctaveChange={handleOctaveValueChange}
-          onMonoChange={handleMonoChange}
+        <LFOModule
+          lfoParams={params.lfo}
+          modRouting={params.modRouting}
+          onRateChange={handleLFORateChange}
+          onDepthChange={handleLFODepthChange}
+          onWaveformChange={handleLFOWaveformChange}
+          onRoutingChange={handleRoutingChange}
         />
 
-        {/* Effects */}
+        {/* Tempo & Arpeggiator - performance controls */}
+        <TempoModule
+          bpm={tempo.bpm}
+          isPlaying={tempo.isPlaying}
+          onBpmChange={handleBpmChange}
+          onTapTempo={tempo.tapTempo}
+          onToggleTransport={tempo.toggleTransport}
+        />
+
+        {/* Row 2: Effects Chain (signal flow order: Distortion → Chorus → Phaser → Delay → Reverb) */}
         <DistortionModule
           amount={params.effects.distortion.amount}
           wet={params.effects.distortion.wet}
@@ -488,14 +497,6 @@ function SynthUI() {
           onPatternChange={handleArpPatternChange}
           onRateChange={handleArpRateChange}
           onOctavesChange={handleArpOctavesChange}
-        />
-
-        <TempoModule
-          bpm={tempo.bpm}
-          isPlaying={tempo.isPlaying}
-          onBpmChange={handleBpmChange}
-          onTapTempo={tempo.tapTempo}
-          onToggleTransport={tempo.toggleTransport}
         />
 
         {/* Presets - full width */}

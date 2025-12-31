@@ -1,5 +1,5 @@
 import { Knob } from '../Controls'
-import { ChorusParams } from '../../types/synth.types'
+import { ChorusParams, DEFAULT_CHORUS_PARAMS } from '../../types/synth.types'
 
 interface ChorusModuleProps {
   params: ChorusParams
@@ -29,6 +29,7 @@ export function ChorusModule({
           onChange={onRateChange}
           size="sm"
           displayValue={(v: number) => `${v.toFixed(1)} Hz`}
+          defaultValue={DEFAULT_CHORUS_PARAMS.rate}
         />
         <Knob
           label="Depth"
@@ -37,6 +38,7 @@ export function ChorusModule({
           max={1}
           onChange={onDepthChange}
           size="sm"
+          defaultValue={DEFAULT_CHORUS_PARAMS.depth}
         />
         <Knob
           label="Mix"
@@ -45,6 +47,7 @@ export function ChorusModule({
           max={1}
           onChange={onWetChange}
           size="sm"
+          defaultValue={DEFAULT_CHORUS_PARAMS.wet}
         />
       </div>
     </div>

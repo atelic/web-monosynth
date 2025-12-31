@@ -9,6 +9,7 @@ interface KnobProps {
   unit?: string
   size?: 'sm' | 'md' | 'lg'
   displayValue?: (value: number) => string
+  defaultValue?: number
 }
 
 const sizeClasses = {
@@ -26,6 +27,7 @@ export function Knob({
   unit = '',
   size = 'md',
   displayValue,
+  defaultValue,
 }: KnobProps) {
   const knobRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -34,6 +36,12 @@ export function Knob({
 
   const normalizedValue = (value - min) / (max - min)
   const rotation = normalizedValue * 270 - 135 // -135 to 135 degrees
+
+  const handleDoubleClick = useCallback(() => {
+    if (defaultValue !== undefined) {
+      onChange(defaultValue)
+    }
+  }, [defaultValue, onChange])
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -78,6 +86,8 @@ export function Knob({
         ref={knobRef}
         className={`${sizeClasses[size].knob} relative cursor-grab active:cursor-grabbing select-none`}
         onMouseDown={handleMouseDown}
+        onDoubleClick={handleDoubleClick}
+        title={defaultValue !== undefined ? 'Double-click to reset' : undefined}
       >
         {/* Background track */}
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">

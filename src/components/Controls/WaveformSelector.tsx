@@ -58,15 +58,15 @@ export function WaveformSelector({ value, onChange }: WaveformSelectorProps) {
   return (
     <div className="flex flex-col gap-2">
       <span className="knob-label">Waveform</span>
-      <div className="flex gap-1">
+      <div className="flex gap-1 p-1 bg-ableton-bg rounded ring-1 ring-ableton-border">
         {waveforms.map(({ type, label, icon }) => (
           <button
             key={type}
             onClick={() => onChange(type)}
             className={`flex flex-col items-center gap-1 px-2 py-1.5 rounded transition-all ${
               value === type
-                ? 'bg-ableton-accent text-white'
-                : 'bg-ableton-surface-light text-ableton-text-dim hover:text-ableton-text hover:bg-ableton-border'
+                ? 'bg-ableton-accent text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]'
+                : 'bg-ableton-surface text-ableton-text-muted hover:text-ableton-text-dim hover:bg-ableton-surface-light'
             }`}
             title={label}
           >
