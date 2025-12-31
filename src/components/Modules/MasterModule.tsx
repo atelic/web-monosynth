@@ -1,5 +1,5 @@
 import { ModulePanel } from '../Layout/ModulePanel'
-import { Knob, WaveformSelector, OctaveDisplay } from '../Controls'
+import { Knob, WaveformSelector, OctaveDisplay, ToggleButton } from '../Controls'
 import { WaveformType } from '../../types/synth.types'
 
 interface MasterModuleProps {
@@ -8,11 +8,13 @@ interface MasterModuleProps {
   release: number
   waveform: WaveformType
   octave: number
+  mono: boolean
   onVolumeChange: (value: number) => void
   onAttackChange: (value: number) => void
   onReleaseChange: (value: number) => void
   onWaveformChange: (waveform: WaveformType) => void
   onOctaveChange: (octave: number) => void
+  onMonoChange: (mono: boolean) => void
   className?: string
 }
 
@@ -22,11 +24,13 @@ export function MasterModule({
   release,
   waveform,
   octave,
+  mono,
   onVolumeChange,
   onAttackChange,
   onReleaseChange,
   onWaveformChange,
   onOctaveChange,
+  onMonoChange,
   className = '',
 }: MasterModuleProps) {
   return (
@@ -60,6 +64,7 @@ export function MasterModule({
       />
       <WaveformSelector value={waveform} onChange={onWaveformChange} />
       <OctaveDisplay octave={octave} onOctaveChange={onOctaveChange} />
+      <ToggleButton label="Mono" value={mono} onChange={onMonoChange} size="sm" />
     </ModulePanel>
   )
 }

@@ -1,0 +1,255 @@
+import { useState, useCallback, useRef, useEffect } from 'react'
+import * as Tone from 'tone'
+import { ArpPattern, ArpRate, ArpeggiatorParams, DEFAULT_ARPEGGIATOR_PARAMS } from '../types/synth.types'
+
+interface UseArpeggiatorProps {
+  playNote: (frequency: number) => void
+  stopNote: (frequency: number) => void
+  stopAllNotes: () => void
+  getNoteTime: (rate: ArpRate) => number
+  getToneTime: (rate: ArpRate) => string
+  setArpeggiating: (active: boolean) => void
+}
+
+export function useArpeggiator({
+  playNote,
+  stopNote,
+  stopAllNotes,
+  getNoteTime,
+  getToneTime,
+  setArpeggiating,
+}: UseArpeggiatorProps) {
+  const [params, setParams] = useState<ArpeggiatorParams>(DEFAULT_ARPEGGIATOR_PARAMS)
+  const heldNotesRef = useRef<number[]>([])
+  const currentIndexRef = useRef<number>(0)
+  const loopRef = useRef<Tone.Loop | null>(null)
+  const currentPlayingNoteRef = useRef<number | null>(null)
+  const isRunningRef = useRef<boolean>(false)
+
+  // Use refs for callback functions to avoid stale closures in scheduled callbacks
+  const playNoteRef = useRef(playNote)
+  const stopNoteRef = useRef(stopNote)
+  const getNoteTimeRef = useRef(getNoteTime)
+  const getToneTimeRef = useRef(getToneTime)
+  const setArpeggiatingRef = useRef(setArpeggiating)
+  const paramsRef = useRef(params)
+
+  // Keep refs updated
+  useEffect(() => {
+    playNoteRef.current = playNote
+    stopNoteRef.current = stopNote
+    getNoteTimeRef.current = getNoteTime
+    getToneTimeRef.current = getToneTime
+    setArpeggiatingRef.current = setArpeggiating
+    paramsRef.current = params
+  }, [playNote, stopNote, getNoteTime, getToneTime, setArpeggiating, params])
+
+  // Generate sequence based on pattern and octaves
+  const generateSequence = useCallback((): number[] => {
+    const notes = [...heldNotesRef.current].sort((a, b) => a - b)
+    if (notes.length === 0) return []
+
+    const sequence: number[] = []
+
+    // Add octave variations
+    for (let oct = 0; oct < paramsRef.current.octaves; oct++) {
+      const multiplier = Math.pow(2, oct)
+      sequence.push(...notes.map((n) => n * multiplier))
+    }
+
+    switch (paramsRef.current.pattern) {
+      case 'up':
+        return sequence
+      case 'down':
+        return sequence.reverse()
+      case 'upDown': {
+        if (sequence.length <= 1) return sequence
+        const upDown = [...sequence, ...sequence.slice(1, -1).reverse()]
+        return upDown
+      }
+      case 'random':
+        // Shuffle using Fisher-Yates
+        for (let i = sequence.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[sequence[i], sequence[j]] = [sequence[j], sequence[i]]
+        }
+        return sequence
+      default:
+        return sequence
+    }
+  }, [])
+
+  // Stop any currently playing note
+  const stopCurrentNote = useCallback(() => {
+    if (currentPlayingNoteRef.current !== null) {
+      stopNoteRef.current(currentPlayingNoteRef.current)
+      currentPlayingNoteRef.current = null
+    }
+  }, [])
+
+  // Start arpeggiator
+  const startArp = useCallback(() => {
+    if (isRunningRef.current) return
+    isRunningRef.current = true
+
+    // Ensure transport is running
+    if (Tone.getTransport().state !== 'started') {
+      Tone.getTransport().start()
+    }
+
+    // Notify audio engine that arpeggiator is active
+    setArpeggiatingRef.current(true)
+
+    const toneTime = getToneTimeRef.current(paramsRef.current.rate)
+    currentIndexRef.current = 0
+
+    // Create a Tone.Loop for reliable repeating
+    loopRef.current = new Tone.Loop((time) => {
+      const sequence = generateSequence()
+      if (sequence.length === 0) return
+
+      // Stop previous note
+      stopCurrentNote()
+
+      // Get current note
+      const freq = sequence[currentIndexRef.current % sequence.length]
+      currentPlayingNoteRef.current = freq
+
+      // Play the note - use Tone.Draw to sync with audio time
+      Tone.getDraw().schedule(() => {
+        playNoteRef.current(freq)
+      }, time)
+
+      // Advance to next
+      currentIndexRef.current = (currentIndexRef.current + 1) % sequence.length
+    }, toneTime)
+
+    // Start the loop immediately
+    loopRef.current.start(0)
+
+    // Play first note immediately
+    const sequence = generateSequence()
+    if (sequence.length > 0) {
+      const freq = sequence[0]
+      currentPlayingNoteRef.current = freq
+      playNoteRef.current(freq)
+      currentIndexRef.current = 1
+    }
+  }, [generateSequence, stopCurrentNote])
+
+  // Stop arpeggiator
+  const stopArp = useCallback(() => {
+    if (!isRunningRef.current) return
+    isRunningRef.current = false
+
+    if (loopRef.current) {
+      loopRef.current.stop()
+      loopRef.current.dispose()
+      loopRef.current = null
+    }
+
+    // Stop current note
+    stopCurrentNote()
+
+    // Notify audio engine that arpeggiator is no longer active
+    setArpeggiatingRef.current(false)
+
+    stopAllNotes()
+  }, [stopAllNotes, stopCurrentNote])
+
+  // Add note to arpeggiator
+  const addNote = useCallback(
+    (frequency: number) => {
+      if (!heldNotesRef.current.includes(frequency)) {
+        heldNotesRef.current.push(frequency)
+      }
+
+      // Start arp if enabled and this is the first note
+      if (paramsRef.current.enabled && heldNotesRef.current.length === 1 && !isRunningRef.current) {
+        startArp()
+      }
+    },
+    [startArp]
+  )
+
+  // Remove note from arpeggiator
+  const removeNote = useCallback(
+    (frequency: number) => {
+      heldNotesRef.current = heldNotesRef.current.filter((n) => n !== frequency)
+
+      if (heldNotesRef.current.length === 0) {
+        stopArp()
+      }
+    },
+    [stopArp]
+  )
+
+  // Clear all notes
+  const clearNotes = useCallback(() => {
+    heldNotesRef.current = []
+    stopArp()
+  }, [stopArp])
+
+  // Update params
+  const setEnabled = useCallback(
+    (enabled: boolean) => {
+      setParams((p) => ({ ...p, enabled }))
+      // Update the ref immediately so addNote can use it
+      paramsRef.current = { ...paramsRef.current, enabled }
+      
+      if (!enabled) {
+        stopArp()
+      } else if (heldNotesRef.current.length > 0 && !isRunningRef.current) {
+        startArp()
+      }
+    },
+    [startArp, stopArp]
+  )
+
+  const setPattern = useCallback((pattern: ArpPattern) => {
+    setParams((p) => ({ ...p, pattern }))
+    paramsRef.current = { ...paramsRef.current, pattern }
+    currentIndexRef.current = 0
+  }, [])
+
+  const setRate = useCallback(
+    (rate: ArpRate) => {
+      setParams((p) => ({ ...p, rate }))
+      paramsRef.current = { ...paramsRef.current, rate }
+      
+      // Update loop interval if running
+      if (isRunningRef.current && loopRef.current) {
+        const toneTime = getToneTimeRef.current(rate)
+        loopRef.current.interval = toneTime
+      }
+    },
+    []
+  )
+
+  const setOctaves = useCallback((octaves: 1 | 2 | 3) => {
+    setParams((p) => ({ ...p, octaves }))
+    paramsRef.current = { ...paramsRef.current, octaves }
+  }, [])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (loopRef.current) {
+        loopRef.current.stop()
+        loopRef.current.dispose()
+      }
+    }
+  }, [])
+
+  return {
+    params,
+    addNote,
+    removeNote,
+    clearNotes,
+    setEnabled,
+    setPattern,
+    setRate,
+    setOctaves,
+    isActive: isRunningRef.current,
+  }
+}

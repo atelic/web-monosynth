@@ -5,9 +5,10 @@ interface VUMeterProps {
   getMeterLevel: () => number
   isPlaying: boolean
   className?: string
+  compact?: boolean
 }
 
-export function VUMeter({ getMeterLevel, isPlaying, className = '' }: VUMeterProps) {
+export function VUMeter({ getMeterLevel, isPlaying, className = '', compact = false }: VUMeterProps) {
   const [level, setLevel] = useState(-60)
 
   useAnimationFrame(() => {
@@ -28,6 +29,30 @@ export function VUMeter({ getMeterLevel, isPlaying, className = '' }: VUMeterPro
     if (percentage > 90) return 'bg-ableton-red'
     if (percentage > 75) return 'bg-ableton-yellow'
     return 'bg-ableton-green'
+  }
+
+  if (compact) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <span className="text-[10px] font-semibold text-ableton-text-secondary uppercase tracking-wider">Level</span>
+        <div className="relative flex-1 h-3 bg-ableton-bg rounded overflow-hidden min-w-[60px]">
+          {/* Meter level */}
+          <div
+            className={`absolute top-0 bottom-0 left-0 transition-all duration-75 ${getColor()}`}
+            style={{ width: `${percentage}%` }}
+          />
+          {/* Grid lines */}
+          <div className="absolute inset-0 flex justify-between px-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-px bg-ableton-border/50" />
+            ))}
+          </div>
+        </div>
+        <span className="text-[10px] font-mono text-ableton-text-muted tabular-nums w-12">
+          {level > -60 ? `${level.toFixed(0)}dB` : '-∞'}
+        </span>
+      </div>
+    )
   }
 
   return (

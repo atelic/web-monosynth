@@ -2,13 +2,13 @@ import { Key } from './Key'
 import { KEY_MAPPING } from '../../constants/frequencies'
 
 interface KeyboardProps {
-  activeKey: string | null
+  activeKeys: Set<string>
   onNoteOn: (code: string) => void
   onNoteOff: (code: string) => void
   className?: string
 }
 
-export function Keyboard({ activeKey, onNoteOn, onNoteOff, className = '' }: KeyboardProps) {
+export function Keyboard({ activeKeys, onNoteOn, onNoteOff, className = '' }: KeyboardProps) {
   // Separate white and black keys for layout
   const whiteKeys = KEY_MAPPING.filter((k) => !k.isBlack)
   const blackKeys = KEY_MAPPING.filter((k) => k.isBlack)
@@ -36,7 +36,7 @@ export function Keyboard({ activeKey, onNoteOn, onNoteOff, className = '' }: Key
               noteName={key.noteName}
               keyCode={key.code}
               isBlack={false}
-              isActive={activeKey === key.code}
+              isActive={activeKeys.has(key.code)}
               onNoteOn={() => onNoteOn(key.code)}
               onNoteOff={() => onNoteOff(key.code)}
             />
@@ -56,7 +56,7 @@ export function Keyboard({ activeKey, onNoteOn, onNoteOff, className = '' }: Key
                   noteName={blackKey.noteName}
                   keyCode={blackKey.code}
                   isBlack={true}
-                  isActive={activeKey === blackKey.code}
+                  isActive={activeKeys.has(blackKey.code)}
                   onNoteOn={() => onNoteOn(blackKey.code)}
                   onNoteOff={() => onNoteOff(blackKey.code)}
                 />

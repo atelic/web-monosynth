@@ -6,7 +6,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Init',
     category: 'lead',
     params: {
-      master: { volume: -12, attack: 0.01, release: 0.3, waveform: 'sawtooth', octave: 3 },
+      master: { volume: -12, attack: 0.01, release: 0.3, waveform: 'sawtooth', octave: 3, mono: false },
       effects: {
         lowpass: { frequency: 20000, Q: 1 },
         highpass: { frequency: 20, Q: 1 },
@@ -16,7 +16,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -25,15 +24,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 2, depth: 0, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0, enabled: false },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: false, time: 0.1 },
       filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.3, amount: 0 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 120, sync: true },
+      tempo: { bpm: 120 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -41,7 +39,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Classic Bass',
     category: 'bass',
     params: {
-      master: { volume: -8, attack: 0.005, release: 0.2, waveform: 'sawtooth', octave: 2 },
+      master: { volume: -8, attack: 0.005, release: 0.2, waveform: 'sawtooth', octave: 2, mono: true },
       effects: {
         lowpass: { frequency: 800, Q: 4 },
         highpass: { frequency: 30, Q: 1 },
@@ -51,7 +49,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0.6,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -60,15 +57,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 0.5, depth: 0.1, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0.2, enabled: true },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: true, time: 0.08 },
       filterEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.2, release: 0.2, amount: 0.5 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 120, sync: true },
+      tempo: { bpm: 120 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -76,7 +72,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Acid Bass',
     category: 'bass',
     params: {
-      master: { volume: -6, attack: 0.001, release: 0.1, waveform: 'sawtooth', octave: 2 },
+      master: { volume: -6, attack: 0.001, release: 0.1, waveform: 'sawtooth', octave: 2, mono: true },
       effects: {
         lowpass: { frequency: 400, Q: 12 },
         highpass: { frequency: 40, Q: 1 },
@@ -86,7 +82,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -95,15 +90,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 4, depth: 0, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0, enabled: false },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: true, time: 0.05 },
       filterEnvelope: { attack: 0.001, decay: 0.15, sustain: 0.1, release: 0.1, amount: 0.8 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/16', octaves: 1 },
-      tempo: { bpm: 130, sync: true },
+      tempo: { bpm: 130 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -111,7 +105,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Screaming Lead',
     category: 'lead',
     params: {
-      master: { volume: -10, attack: 0.02, release: 0.4, waveform: 'sawtooth', octave: 4 },
+      master: { volume: -10, attack: 0.02, release: 0.4, waveform: 'sawtooth', octave: 4, mono: true },
       effects: {
         lowpass: { frequency: 5000, Q: 2 },
         highpass: { frequency: 100, Q: 1 },
@@ -121,7 +115,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0.2,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -130,15 +123,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 5, depth: 0.15, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0.3, enabled: true },
-        { target: 'pitch', amount: 0.05, enabled: true },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: true, time: 0.15 },
       filterEnvelope: { attack: 0.05, decay: 0.5, sustain: 0.6, release: 0.5, amount: 0.4 },
       chorus: { rate: 2, depth: 0.4, wet: 0.3 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 120, sync: true },
+      tempo: { bpm: 120 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -146,7 +138,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Soft Pad',
     category: 'pad',
     params: {
-      master: { volume: -14, attack: 0.5, release: 1.5, waveform: 'triangle', octave: 3 },
+      master: { volume: -14, attack: 0.5, release: 1.5, waveform: 'triangle', octave: 3, mono: false },
       effects: {
         lowpass: { frequency: 3000, Q: 0.5 },
         highpass: { frequency: 80, Q: 1 },
@@ -156,7 +148,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'triangle',
-        pulseWidth: 0.5,
         subOscLevel: 0.3,
         subOscOctave: -1,
         noiseLevel: 0.05,
@@ -165,23 +156,22 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 0.3, depth: 0.2, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0.15, enabled: true },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: false, time: 0.1 },
       filterEnvelope: { attack: 0.8, decay: 1, sustain: 0.7, release: 1.5, amount: 0.3 },
       chorus: { rate: 0.8, depth: 0.6, wet: 0.5 },
       phaser: { rate: 0.2, depth: 0.3, wet: 0.2 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 90, sync: true },
+      tempo: { bpm: 90 },
+      pitchBendRange: 2,
     },
   },
   {
-    id: 'pwm-strings',
-    name: 'PWM Strings',
+    id: 'warm-strings',
+    name: 'Warm Strings',
     category: 'pad',
     params: {
-      master: { volume: -12, attack: 0.3, release: 1, waveform: 'square', octave: 3 },
+      master: { volume: -12, attack: 0.3, release: 1, waveform: 'square', octave: 3, mono: false },
       effects: {
         lowpass: { frequency: 4000, Q: 1 },
         highpass: { frequency: 100, Q: 1 },
@@ -191,7 +181,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'square',
-        pulseWidth: 0.5,
         subOscLevel: 0.15,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -199,16 +188,15 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       lfo: { rate: 0.8, depth: 0.4, waveform: 'triangle' },
       modRouting: [
-        { target: 'filterCutoff', amount: 0, enabled: false },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0.8, enabled: true },
+        { target: 'filterCutoff', amount: 0.2, enabled: true },
       ],
       glide: { enabled: false, time: 0.1 },
       filterEnvelope: { attack: 0.4, decay: 0.5, sustain: 0.8, release: 1, amount: 0.2 },
       chorus: { rate: 1, depth: 0.5, wet: 0.4 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 120, sync: true },
+      tempo: { bpm: 120 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -216,7 +204,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Pluck Lead',
     category: 'lead',
     params: {
-      master: { volume: -10, attack: 0.001, release: 0.5, waveform: 'sawtooth', octave: 4 },
+      master: { volume: -10, attack: 0.001, release: 0.5, waveform: 'sawtooth', octave: 4, mono: false },
       effects: {
         lowpass: { frequency: 8000, Q: 1 },
         highpass: { frequency: 80, Q: 1 },
@@ -226,7 +214,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0,
         subOscOctave: -1,
         noiseLevel: 0.02,
@@ -235,15 +222,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 2, depth: 0, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0, enabled: false },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: false, time: 0.1 },
       filterEnvelope: { attack: 0.001, decay: 0.2, sustain: 0.3, release: 0.4, amount: 0.6 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/16', octaves: 2 },
-      tempo: { bpm: 128, sync: true },
+      tempo: { bpm: 128 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -251,7 +237,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Wobble Bass',
     category: 'bass',
     params: {
-      master: { volume: -8, attack: 0.01, release: 0.2, waveform: 'sawtooth', octave: 2 },
+      master: { volume: -8, attack: 0.01, release: 0.2, waveform: 'sawtooth', octave: 2, mono: true },
       effects: {
         lowpass: { frequency: 600, Q: 8 },
         highpass: { frequency: 30, Q: 1 },
@@ -261,7 +247,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0.4,
         subOscOctave: -1,
         noiseLevel: 0,
@@ -270,15 +255,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 3, depth: 0.7, waveform: 'sine' },
       modRouting: [
         { target: 'filterCutoff', amount: 0.8, enabled: true },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: true, time: 0.05 },
       filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.8, release: 0.2, amount: 0.2 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 0.5, depth: 0.5, wet: 0 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 140, sync: true },
+      tempo: { bpm: 140 },
+      pitchBendRange: 2,
     },
   },
   {
@@ -286,7 +270,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Laser FX',
     category: 'fx',
     params: {
-      master: { volume: -12, attack: 0.001, release: 0.8, waveform: 'sawtooth', octave: 5 },
+      master: { volume: -12, attack: 0.001, release: 0.8, waveform: 'sawtooth', octave: 5, mono: true },
       effects: {
         lowpass: { frequency: 15000, Q: 3 },
         highpass: { frequency: 200, Q: 1 },
@@ -296,7 +280,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sawtooth',
-        pulseWidth: 0.5,
         subOscLevel: 0,
         subOscOctave: -2,
         noiseLevel: 0.1,
@@ -305,15 +288,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 15, depth: 0.5, waveform: 'sawtooth' },
       modRouting: [
         { target: 'filterCutoff', amount: 0, enabled: false },
-        { target: 'pitch', amount: 0.5, enabled: true },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: true, time: 0.3 },
       filterEnvelope: { attack: 0.001, decay: 0.5, sustain: 0.2, release: 0.8, amount: 0.7 },
       chorus: { rate: 1.5, depth: 0.5, wet: 0 },
       phaser: { rate: 2, depth: 0.8, wet: 0.5 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 120, sync: true },
+      tempo: { bpm: 120 },
+      pitchBendRange: 12,
     },
   },
   {
@@ -321,7 +303,7 @@ export const FACTORY_PRESETS: Preset[] = [
     name: 'Noise Sweep',
     category: 'fx',
     params: {
-      master: { volume: -14, attack: 0.5, release: 2, waveform: 'sine', octave: 3 },
+      master: { volume: -14, attack: 0.5, release: 2, waveform: 'sine', octave: 3, mono: false },
       effects: {
         lowpass: { frequency: 2000, Q: 4 },
         highpass: { frequency: 100, Q: 1 },
@@ -331,7 +313,6 @@ export const FACTORY_PRESETS: Preset[] = [
       },
       oscillator: {
         waveform: 'sine',
-        pulseWidth: 0.5,
         subOscLevel: 0,
         subOscOctave: -1,
         noiseLevel: 0.8,
@@ -340,15 +321,14 @@ export const FACTORY_PRESETS: Preset[] = [
       lfo: { rate: 0.1, depth: 0.8, waveform: 'triangle' },
       modRouting: [
         { target: 'filterCutoff', amount: 0.9, enabled: true },
-        { target: 'pitch', amount: 0, enabled: false },
-        { target: 'pulseWidth', amount: 0, enabled: false },
       ],
       glide: { enabled: false, time: 0.1 },
       filterEnvelope: { attack: 2, decay: 1, sustain: 0.5, release: 2, amount: 0.5 },
       chorus: { rate: 0.5, depth: 0.3, wet: 0.3 },
       phaser: { rate: 0.3, depth: 0.6, wet: 0.4 },
       arpeggiator: { enabled: false, pattern: 'up', rate: '1/8', octaves: 1 },
-      tempo: { bpm: 100, sync: true },
+      tempo: { bpm: 100 },
+      pitchBendRange: 2,
     },
   },
 ]

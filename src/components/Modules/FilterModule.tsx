@@ -1,15 +1,22 @@
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
+import { FilterEnvelopeParams } from '../../types/synth.types'
 
 interface FilterModuleProps {
   lowpassFreq: number
   lowpassQ: number
   highpassFreq: number
   highpassQ: number
+  filterEnvelope: FilterEnvelopeParams
   onLowpassFreqChange: (value: number) => void
   onLowpassQChange: (value: number) => void
   onHighpassFreqChange: (value: number) => void
   onHighpassQChange: (value: number) => void
+  onFilterEnvAttackChange: (value: number) => void
+  onFilterEnvDecayChange: (value: number) => void
+  onFilterEnvSustainChange: (value: number) => void
+  onFilterEnvReleaseChange: (value: number) => void
+  onFilterEnvAmountChange: (value: number) => void
   className?: string
 }
 
@@ -20,24 +27,38 @@ function formatFrequency(freq: number): string {
   return freq.toFixed(0)
 }
 
+function formatTime(time: number): string {
+  if (time >= 1) {
+    return `${time.toFixed(1)}s`
+  }
+  return `${(time * 1000).toFixed(0)}ms`
+}
+
 export function FilterModule({
   lowpassFreq,
   lowpassQ,
   highpassFreq,
   highpassQ,
+  filterEnvelope,
   onLowpassFreqChange,
   onLowpassQChange,
   onHighpassFreqChange,
   onHighpassQChange,
+  onFilterEnvAttackChange,
+  onFilterEnvDecayChange,
+  onFilterEnvSustainChange,
+  onFilterEnvReleaseChange,
+  onFilterEnvAmountChange,
   className = '',
 }: FilterModuleProps) {
   return (
-    <ModulePanel title="Filters" className={className}>
+    <ModulePanel title="Filter" className={className}>
       <div className="flex flex-col gap-4">
+        {/* Filter cutoff and resonance */}
         <div className="flex gap-3">
           <Knob
             value={lowpassFreq}
-            min={100}
+            min={20}
             max={20000}
             onChange={onLowpassFreqChange}
             label="LP Freq"
@@ -75,6 +96,58 @@ export function FilterModule({
             size="sm"
             displayValue={(v) => v.toFixed(1)}
           />
+        </div>
+
+        {/* Filter Envelope */}
+        <div className="border-t border-ableton-bg pt-3">
+          <div className="text-xs text-ableton-text-secondary mb-2 text-center">Filter Envelope</div>
+          <div className="grid grid-cols-5 gap-2">
+            <Knob
+              value={filterEnvelope.attack}
+              min={0.001}
+              max={2}
+              onChange={onFilterEnvAttackChange}
+              label="A"
+              size="sm"
+              displayValue={formatTime}
+            />
+            <Knob
+              value={filterEnvelope.decay}
+              min={0.001}
+              max={2}
+              onChange={onFilterEnvDecayChange}
+              label="D"
+              size="sm"
+              displayValue={formatTime}
+            />
+            <Knob
+              value={filterEnvelope.sustain}
+              min={0}
+              max={1}
+              onChange={onFilterEnvSustainChange}
+              label="S"
+              size="sm"
+              displayValue={(v) => `${(v * 100).toFixed(0)}%`}
+            />
+            <Knob
+              value={filterEnvelope.release}
+              min={0.001}
+              max={3}
+              onChange={onFilterEnvReleaseChange}
+              label="R"
+              size="sm"
+              displayValue={formatTime}
+            />
+            <Knob
+              value={filterEnvelope.amount}
+              min={0}
+              max={1}
+              onChange={onFilterEnvAmountChange}
+              label="Amt"
+              size="sm"
+              displayValue={(v) => `${(v * 100).toFixed(0)}%`}
+            />
+          </div>
         </div>
       </div>
     </ModulePanel>

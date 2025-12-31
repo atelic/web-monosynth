@@ -5,12 +5,14 @@ interface WaveformDisplayProps {
   getWaveformData: () => Float32Array
   isPlaying: boolean
   className?: string
+  compact?: boolean
 }
 
 export function WaveformDisplay({
   getWaveformData,
   isPlaying,
   className = '',
+  compact = false,
 }: WaveformDisplayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -47,7 +49,7 @@ export function WaveformDisplay({
     ctx.fillStyle = '#1a1a1a'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Draw grid lines
+    // Draw grid lines (fewer for compact)
     ctx.strokeStyle = '#3d3d3d'
     ctx.lineWidth = 1
     ctx.beginPath()
@@ -55,8 +57,9 @@ export function WaveformDisplay({
     ctx.moveTo(0, canvas.height / 2)
     ctx.lineTo(canvas.width, canvas.height / 2)
     // Vertical lines
-    for (let i = 0; i <= 4; i++) {
-      const x = (canvas.width / 4) * i
+    const verticalLines = compact ? 2 : 4
+    for (let i = 0; i <= verticalLines; i++) {
+      const x = (canvas.width / verticalLines) * i
       ctx.moveTo(x, 0)
       ctx.lineTo(x, canvas.height)
     }
@@ -64,7 +67,7 @@ export function WaveformDisplay({
 
     // Draw waveform
     ctx.strokeStyle = '#ff764d'
-    ctx.lineWidth = 2 * dpr
+    ctx.lineWidth = (compact ? 1.5 : 2) * dpr
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.beginPath()
@@ -105,8 +108,9 @@ export function WaveformDisplay({
     ctx.beginPath()
     ctx.moveTo(0, canvas.height / 2)
     ctx.lineTo(canvas.width, canvas.height / 2)
-    for (let i = 0; i <= 4; i++) {
-      const x = (canvas.width / 4) * i
+    const verticalLines = compact ? 2 : 4
+    for (let i = 0; i <= verticalLines; i++) {
+      const x = (canvas.width / verticalLines) * i
       ctx.moveTo(x, 0)
       ctx.lineTo(x, canvas.height)
     }
@@ -114,21 +118,24 @@ export function WaveformDisplay({
 
     // Flat center line
     ctx.strokeStyle = '#ff764d'
-    ctx.lineWidth = 2 * window.devicePixelRatio
+    ctx.lineWidth = (compact ? 1.5 : 2) * window.devicePixelRatio
     ctx.beginPath()
     ctx.moveTo(0, canvas.height / 2)
     ctx.lineTo(canvas.width, canvas.height / 2)
     ctx.stroke()
-  }, [isPlaying, dimensions])
+  }, [isPlaying, dimensions, compact])
+
+  const heightClass = compact ? 'h-12' : 'h-24'
+  const paddingClass = compact ? 'p-2' : 'p-4'
 
   return (
     <div
-      className={`bg-ableton-surface border border-ableton-border rounded-lg p-4 ${className}`}
+      className={`bg-ableton-surface border border-ableton-border rounded-lg ${paddingClass} ${className}`}
     >
-      <h3 className="module-title mb-2">Waveform</h3>
+      {!compact && <h3 className="module-title mb-2">Waveform</h3>}
       <canvas
         ref={canvasRef}
-        className="w-full h-24 rounded bg-ableton-bg"
+        className={`w-full ${heightClass} rounded bg-ableton-bg`}
         style={{ imageRendering: 'crisp-edges' }}
       />
     </div>

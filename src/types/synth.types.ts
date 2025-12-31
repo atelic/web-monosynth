@@ -1,7 +1,7 @@
 export type WaveformType = 'sine' | 'square' | 'triangle' | 'sawtooth'
 export type LFOWaveform = 'sine' | 'triangle' | 'square' | 'sawtooth'
 export type NoiseType = 'white' | 'pink'
-export type ModulationTarget = 'filterCutoff' | 'pitch' | 'pulseWidth'
+export type ModulationTarget = 'filterCutoff'
 export type ArpPattern = 'up' | 'down' | 'upDown' | 'random'
 export type ArpRate = '1/4' | '1/8' | '1/16' | '1/32'
 export type PresetCategory = 'bass' | 'lead' | 'pad' | 'fx' | 'user'
@@ -45,13 +45,7 @@ export interface MasterParams {
   release: number
   waveform: WaveformType
   octave: number
-}
-
-export interface SynthState {
-  master: MasterParams
-  effects: EffectParams
-  activeNote: string | null
-  isPlaying: boolean
+  mono: boolean
 }
 
 // LFO Parameters
@@ -70,7 +64,6 @@ export interface ModulationRouting {
 // Oscillator Parameters
 export interface OscillatorParams {
   waveform: WaveformType
-  pulseWidth: number // 0-1 (for square wave)
   subOscLevel: number // 0-1
   subOscOctave: -1 | -2
   noiseLevel: number // 0-1
@@ -122,7 +115,6 @@ export interface ArpeggiatorParams {
 // Tempo
 export interface TempoParams {
   bpm: number // 40-240
-  sync: boolean // sync delay/arp to tempo
 }
 
 // Preset System
@@ -145,6 +137,7 @@ export interface SynthPresetParams {
   phaser: PhaserParams
   arpeggiator: ArpeggiatorParams
   tempo: TempoParams
+  pitchBendRange: number
 }
 
 export const DEFAULT_MASTER_PARAMS: MasterParams = {
@@ -153,6 +146,7 @@ export const DEFAULT_MASTER_PARAMS: MasterParams = {
   release: 0.3,
   waveform: 'sawtooth',
   octave: 3,
+  mono: false,
 }
 
 export const DEFAULT_EFFECT_PARAMS: EffectParams = {
@@ -187,13 +181,10 @@ export const DEFAULT_LFO_PARAMS: LFOParams = {
 
 export const DEFAULT_MOD_ROUTING: ModulationRouting[] = [
   { target: 'filterCutoff', amount: 0, enabled: false },
-  { target: 'pitch', amount: 0, enabled: false },
-  { target: 'pulseWidth', amount: 0, enabled: false },
 ]
 
 export const DEFAULT_OSCILLATOR_PARAMS: OscillatorParams = {
   waveform: 'sawtooth',
-  pulseWidth: 0.5,
   subOscLevel: 0,
   subOscOctave: -1,
   noiseLevel: 0,
@@ -239,5 +230,6 @@ export const DEFAULT_ARPEGGIATOR_PARAMS: ArpeggiatorParams = {
 
 export const DEFAULT_TEMPO_PARAMS: TempoParams = {
   bpm: 120,
-  sync: true,
 }
+
+export const DEFAULT_PITCH_BEND_RANGE = 2
