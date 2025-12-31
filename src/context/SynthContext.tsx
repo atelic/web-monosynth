@@ -200,6 +200,9 @@ export function SynthProvider({ children, getFrequency }: SynthProviderProps) {
   const [params, setParams] = useState<SynthPresetParams>(DEFAULT_PRESET_PARAMS)
   const [pitchBendValue, setPitchBendValue] = useState(0)
   const [activeKeys, setActiveKeys] = useState<Set<string>>(new Set())
+  
+  // Track frequencies of currently held keys (to handle octave changes while notes are held)
+  const [activeKeyFrequencies, setActiveKeyFrequencies] = useState<Map<string, number>>(new Map())
 
   // Presets
   const presetsHook = usePresets()
@@ -248,6 +251,12 @@ export function SynthProvider({ children, getFrequency }: SynthProviderProps) {
       if (freq) {
         playNote(freq)
         setActiveKeys((prev) => new Set(prev).add(code))
+        // Track the frequency for this key so we can stop the correct note later
+        setActiveKeyFrequencies((prev) => {
+          const next = new Map(prev)
+          next.set(code, freq)
+          return next
+        })
       }
     },
     [params.master.octave, playNote, getFrequency]
@@ -255,7 +264,8 @@ export function SynthProvider({ children, getFrequency }: SynthProviderProps) {
 
   const handleNoteOff = useCallback(
     (code: string) => {
-      const freq = getFrequency(code, params.master.octave)
+      // Use the stored frequency from when the note was triggered, not the current octave
+      const freq = activeKeyFrequencies.get(code)
       if (freq) {
         stopNote(freq)
         setActiveKeys((prev) => {
@@ -263,9 +273,14 @@ export function SynthProvider({ children, getFrequency }: SynthProviderProps) {
           next.delete(code)
           return next
         })
+        setActiveKeyFrequencies((prev) => {
+          const next = new Map(prev)
+          next.delete(code)
+          return next
+        })
       }
     },
-    [params.master.octave, stopNote, getFrequency]
+    [activeKeyFrequencies, stopNote]
   )
 
   const handleOctaveChange = useCallback(

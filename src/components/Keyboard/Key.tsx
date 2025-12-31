@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { NoteName } from '../../types/synth.types'
 
 interface KeyProps {
@@ -11,13 +12,29 @@ interface KeyProps {
 
 export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff }: KeyProps) {
   const keyLabel = keyCode.replace('Key', '')
+  const isTriggeredRef = useRef(false)
+
+  // Only trigger note-on once, and track state to prevent duplicate note-offs
+  const handleNoteOn = useCallback(() => {
+    if (!isTriggeredRef.current) {
+      isTriggeredRef.current = true
+      onNoteOn()
+    }
+  }, [onNoteOn])
+
+  const handleNoteOff = useCallback(() => {
+    if (isTriggeredRef.current) {
+      isTriggeredRef.current = false
+      onNoteOff()
+    }
+  }, [onNoteOff])
 
   if (isBlack) {
     return (
       <button
         className={`
           relative z-10 h-16 -mx-2 flex flex-col items-center justify-end pb-1
-          rounded-b-md transition-all duration-75
+          rounded-b-md transition-all duration-75 touch-none select-none
           ${
             isActive
               ? 'bg-ableton-accent shadow-key-active'
@@ -25,9 +42,12 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
           }
           border border-gray-600
         `}
-        onMouseDown={onNoteOn}
-        onMouseUp={onNoteOff}
-        onMouseLeave={onNoteOff}
+        onMouseDown={handleNoteOn}
+        onMouseUp={handleNoteOff}
+        onMouseLeave={handleNoteOff}
+        onTouchStart={handleNoteOn}
+        onTouchEnd={handleNoteOff}
+        onTouchCancel={handleNoteOff}
       >
         <span
           className={`text-[10px] font-mono ${isActive ? 'text-white' : 'text-ableton-text-muted'}`}
@@ -42,7 +62,7 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
     <button
       className={`
         relative h-24 flex flex-col items-center justify-end pb-2
-        rounded-b-md transition-all duration-75
+        rounded-b-md transition-all duration-75 touch-none select-none
         ${
           isActive
             ? 'bg-ableton-accent shadow-key-active'
@@ -50,9 +70,12 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
         }
         border border-gray-300
       `}
-      onMouseDown={onNoteOn}
-      onMouseUp={onNoteOff}
-      onMouseLeave={onNoteOff}
+      onMouseDown={handleNoteOn}
+      onMouseUp={handleNoteOff}
+      onMouseLeave={handleNoteOff}
+      onTouchStart={handleNoteOn}
+      onTouchEnd={handleNoteOff}
+      onTouchCancel={handleNoteOff}
     >
       <span
         className={`text-xs font-mono ${isActive ? 'text-white' : 'text-ableton-text-muted'} mb-1`}
