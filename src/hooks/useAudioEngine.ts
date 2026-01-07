@@ -14,6 +14,7 @@ import {
   DEFAULT_CHORUS_PARAMS,
   DEFAULT_PHASER_PARAMS,
 } from '../types/synth.types'
+import { AUDIO_CONSTANTS } from '../constants/audio'
 
 interface AudioEngineState {
   isInitialized: boolean
@@ -152,7 +153,7 @@ export function useAudioEngine() {
     })
     // Scale envelope output (0-1) to frequency offset (0 to max sweep)
     // Initialize with max=0 so envelope has no effect until amount > 0
-    filterEnvScaleRef.current = new Tone.Scale(0, DEFAULT_FILTER_ENVELOPE_PARAMS.amount * 8000)
+    filterEnvScaleRef.current = new Tone.Scale(0, DEFAULT_FILTER_ENVELOPE_PARAMS.amount * AUDIO_CONSTANTS.FILTER_ENV_MAX_SWEEP_HZ)
     filterEnvRef.current.connect(filterEnvScaleRef.current)
 
     // Create LFO
@@ -641,15 +642,13 @@ export function useAudioEngine() {
     lfoRef.current.type = waveform
   }, [])
 
-  const LFO_FILTER_MAX_RANGE = 5000
-
   const setModRouting = useCallback((target: ModulationTarget, amount: number, enabled: boolean) => {
     const scaledAmount = enabled ? amount : 0
 
     switch (target) {
       case 'filterCutoff':
         if (lfoToFilterRef.current) {
-          lfoToFilterRef.current.gain.rampTo(scaledAmount * LFO_FILTER_MAX_RANGE, 0.1)
+          lfoToFilterRef.current.gain.rampTo(scaledAmount * AUDIO_CONSTANTS.LFO_FILTER_MAX_RANGE_HZ, AUDIO_CONSTANTS.DEFAULT_RAMP_TIME)
         }
         break
     }
@@ -701,8 +700,7 @@ export function useAudioEngine() {
   const setFilterEnvAmount = useCallback((amount: number) => {
     if (!filterEnvScaleRef.current) return
     filterEnvAmountRef.current = amount
-    // Scale from 0-1 to 0-8000 Hz max sweep
-    filterEnvScaleRef.current.max = amount * 8000
+    filterEnvScaleRef.current.max = amount * AUDIO_CONSTANTS.FILTER_ENV_MAX_SWEEP_HZ
   }, [])
 
   // Distortion controls

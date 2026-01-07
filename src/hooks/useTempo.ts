@@ -6,6 +6,7 @@ export function useTempo() {
   const [bpm, setBpmState] = useState(DEFAULT_TEMPO_PARAMS.bpm)
   const [isPlaying, setIsPlaying] = useState(false)
   const tapTimesRef = useRef<number[]>([])
+  const transportConsumersRef = useRef<Set<string>>(new Set())
 
   // Sync Tone.Transport BPM
   useEffect(() => {
@@ -19,13 +20,31 @@ export function useTempo() {
   }, [])
 
   const startTransport = useCallback(() => {
-    Tone.getTransport().start()
+    if (Tone.getTransport().state !== 'started') {
+      Tone.getTransport().start()
+    }
     setIsPlaying(true)
   }, [])
 
   const stopTransport = useCallback(() => {
     Tone.getTransport().stop()
     setIsPlaying(false)
+  }, [])
+
+  const requestTransportStart = useCallback((consumerId: string) => {
+    transportConsumersRef.current.add(consumerId)
+    if (Tone.getTransport().state !== 'started') {
+      Tone.getTransport().start()
+      setIsPlaying(true)
+    }
+  }, [])
+
+  const releaseTransport = useCallback((consumerId: string) => {
+    transportConsumersRef.current.delete(consumerId)
+    if (transportConsumersRef.current.size === 0 && Tone.getTransport().state === 'started') {
+      Tone.getTransport().stop()
+      setIsPlaying(false)
+    }
   }, [])
 
   const toggleTransport = useCallback(() => {
@@ -111,6 +130,8 @@ export function useTempo() {
     tapTempo,
     getNoteTime,
     getToneTime,
+    requestTransportStart,
+    releaseTransport,
     transport: Tone.getTransport(),
   }
 }

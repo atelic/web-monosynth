@@ -6,6 +6,7 @@ import {
   DEFAULT_EFFECT_PARAMS,
   DEFAULT_FILTER_ENVELOPE_PARAMS,
 } from '../../types/synth.types'
+import { AUDIO_CONSTANTS } from '../../constants/audio'
 
 interface FilterModuleProps {
   lowpassFreq: number
@@ -87,7 +88,7 @@ export const FilterModule = memo(function FilterModule({
           <Knob
             value={highpassFreq}
             min={20}
-            max={5000}
+            max={AUDIO_CONSTANTS.HIGHPASS_MAX_FREQ_HZ}
             onChange={onHighpassFreqChange}
             label="HP Freq"
             unit="Hz"
