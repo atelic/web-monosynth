@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob } from '../Controls'
 import { ChorusParams, DEFAULT_CHORUS_PARAMS } from '../../types/synth.types'
 
@@ -8,7 +9,7 @@ interface ChorusModuleProps {
   onWetChange: (wet: number) => void
 }
 
-export function ChorusModule({
+export const ChorusModule = memo(function ChorusModule({
   params,
   onRateChange,
   onDepthChange,
@@ -52,4 +53,4 @@ export function ChorusModule({
       </div>
     </div>
   )
-}
+})

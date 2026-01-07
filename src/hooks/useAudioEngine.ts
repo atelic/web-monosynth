@@ -151,7 +151,8 @@ export function useAudioEngine() {
       release: DEFAULT_FILTER_ENVELOPE_PARAMS.release,
     })
     // Scale envelope output (0-1) to frequency offset (0 to max sweep)
-    filterEnvScaleRef.current = new Tone.Scale(0, 5000)
+    // Initialize with max=0 so envelope has no effect until amount > 0
+    filterEnvScaleRef.current = new Tone.Scale(0, DEFAULT_FILTER_ENVELOPE_PARAMS.amount * 8000)
     filterEnvRef.current.connect(filterEnvScaleRef.current)
 
     // Create LFO
@@ -173,8 +174,10 @@ export function useAudioEngine() {
       units: 'frequency',
     })
     
+    // Initialize filter with frequency: 0 so the Signal is the sole source
+    // The base frequency Signal will control the actual frequency
     lowpassRef.current = new Tone.Filter({
-      frequency: DEFAULT_EFFECT_PARAMS.lowpass.frequency,
+      frequency: 0,
       type: 'lowpass',
       Q: DEFAULT_EFFECT_PARAMS.lowpass.Q,
     })
@@ -463,6 +466,41 @@ export function useAudioEngine() {
     setState((s) => ({ ...s, activeNotes: 0 }))
   }, [])
 
+  const playArpNote = useCallback(
+    (frequency: number, time?: number) => {
+      if (!polySynthRef.current) return
+
+      const targetFreq = getFrequencyWithBend(frequency)
+      const note = Tone.Frequency(targetFreq).toNote()
+      const triggerTime = time ?? Tone.now()
+
+      polySynthRef.current.triggerAttack(note, triggerTime)
+
+      if (subOscRef.current && subEnvRef.current) {
+        const subFreq = targetFreq / Math.pow(2, Math.abs(subOscOctaveRef.current))
+        subOscRef.current.frequency.setValueAtTime(subFreq, triggerTime)
+        subEnvRef.current.triggerAttack(triggerTime)
+      }
+
+      noiseEnvRef.current?.triggerAttack(triggerTime)
+      filterEnvRef.current?.triggerAttack(triggerTime)
+    },
+    [getFrequencyWithBend]
+  )
+
+  const stopArpNote = useCallback(
+    (frequency: number, time?: number) => {
+      if (!polySynthRef.current) return
+
+      const targetFreq = getFrequencyWithBend(frequency)
+      const note = Tone.Frequency(targetFreq).toNote()
+      const releaseTime = time ?? Tone.now()
+
+      polySynthRef.current.triggerRelease(note, releaseTime)
+    },
+    [getFrequencyWithBend]
+  )
+
   // Set arpeggiating state (called by arpeggiator hook)
   const setArpeggiating = useCallback((active: boolean) => {
     isArpeggiatingRef.current = active
@@ -603,14 +641,15 @@ export function useAudioEngine() {
     lfoRef.current.type = waveform
   }, [])
 
-  // Modulation routing
+  const LFO_FILTER_MAX_RANGE = 5000
+
   const setModRouting = useCallback((target: ModulationTarget, amount: number, enabled: boolean) => {
     const scaledAmount = enabled ? amount : 0
 
     switch (target) {
       case 'filterCutoff':
         if (lfoToFilterRef.current) {
-          lfoToFilterRef.current.gain.rampTo(scaledAmount * 2000, 0.1)
+          lfoToFilterRef.current.gain.rampTo(scaledAmount * LFO_FILTER_MAX_RANGE, 0.1)
         }
         break
     }
@@ -799,6 +838,8 @@ export function useAudioEngine() {
     playNote,
     stopNote,
     stopAllNotes,
+    playArpNote,
+    stopArpNote,
     setArpeggiating,
     // Master
     setVolume,

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob } from '../Controls'
 import { DEFAULT_TEMPO_PARAMS } from '../../types/synth.types'
 
@@ -9,7 +10,7 @@ interface TempoModuleProps {
   onToggleTransport: () => void
 }
 
-export function TempoModule({
+export const TempoModule = memo(function TempoModule({
   bpm,
   isPlaying,
   onBpmChange,
@@ -62,4 +63,4 @@ export function TempoModule({
       </div>
     </div>
   )
-}
+})

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ToggleButton, SegmentedSelector } from '../Controls'
 import { ArpPattern, ArpRate, ArpeggiatorParams } from '../../types/synth.types'
 
@@ -29,7 +30,7 @@ const OCTAVE_OPTIONS: { value: 1 | 2 | 3; label: string }[] = [
   { value: 3, label: '3' },
 ]
 
-export function ArpeggiatorModule({
+export const ArpeggiatorModule = memo(function ArpeggiatorModule({
   params,
   onEnabledChange,
   onPatternChange,
@@ -83,4 +84,4 @@ export function ArpeggiatorModule({
       </div>
     </div>
   )
-}
+})

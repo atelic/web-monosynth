@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob, ToggleButton, SegmentedSelector } from '../Controls'
 import { LFOWaveform, LFOParams, ModulationRouting, ModulationTarget, DEFAULT_LFO_PARAMS } from '../../types/synth.types'
 
@@ -17,7 +18,7 @@ const LFO_WAVEFORM_OPTIONS: { value: LFOWaveform; label: string }[] = [
   { value: 'sawtooth', label: 'SAW' },
 ]
 
-export function LFOModule({
+export const LFOModule = memo(function LFOModule({
   lfoParams,
   modRouting,
   onRateChange,
@@ -107,4 +108,4 @@ export function LFOModule({
       </div>
     </div>
   )
-}
+})

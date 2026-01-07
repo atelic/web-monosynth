@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob, WaveformSelector, SegmentedSelector } from '../Controls'
 import { WaveformType, NoiseType, OscillatorParams, DEFAULT_OSCILLATOR_PARAMS } from '../../types/synth.types'
 
@@ -10,7 +11,7 @@ interface OscillatorModuleProps {
   onNoiseTypeChange: (type: NoiseType) => void
 }
 
-export function OscillatorModule({
+export const OscillatorModule = memo(function OscillatorModule({
   params,
   onWaveformChange,
   onSubOscLevelChange,
@@ -84,4 +85,4 @@ export function OscillatorModule({
       </div>
     </div>
   )
-}
+})

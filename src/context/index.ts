@@ -1,1 +1,2 @@
-export { SynthProvider, useSynth } from './SynthContext'
+export { SynthProvider } from './SynthContext'
+export { useSynth } from './useSynth'

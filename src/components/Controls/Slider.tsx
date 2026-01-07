@@ -26,12 +26,6 @@ export function Slider({
 
   const normalizedValue = (value - min) / (max - min)
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-    updateValue(e.nativeEvent)
-  }, [])
-
   const updateValue = useCallback(
     (e: MouseEvent | React.MouseEvent['nativeEvent']) => {
       if (!trackRef.current) return
@@ -51,6 +45,12 @@ export function Slider({
     },
     [min, max, orientation, onChange]
   )
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+    updateValue(e.nativeEvent)
+  }, [updateValue])
 
   useEffect(() => {
     if (!isDragging) return

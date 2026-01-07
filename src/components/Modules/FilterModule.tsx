@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
 import {
@@ -38,7 +39,7 @@ function formatTime(time: number): string {
   return `${(time * 1000).toFixed(0)}ms`
 }
 
-export function FilterModule({
+export const FilterModule = memo(function FilterModule({
   lowpassFreq,
   lowpassQ,
   highpassFreq,
@@ -165,4 +166,4 @@ export function FilterModule({
       </div>
     </ModulePanel>
   )
-}
+})
