@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
+import { AUDIO_CONSTANTS } from '../../constants/audio'
 
 interface KnobProps {
   value: number
@@ -59,7 +60,7 @@ export function Knob({
     const handleMouseMove = (e: MouseEvent) => {
       const deltaY = dragStartY.current - e.clientY
       const range = max - min
-      const sensitivity = range / 150 // 150px drag for full range
+      const sensitivity = range / AUDIO_CONSTANTS.KNOB_DRAG_SENSITIVITY_PX
       const newValue = Math.max(min, Math.min(max, dragStartValue.current + deltaY * sensitivity))
       onChange(newValue)
     }

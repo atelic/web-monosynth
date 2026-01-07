@@ -11,7 +11,11 @@ interface UseArpeggiatorProps {
   getNoteTime: (rate: ArpRate) => number
   getToneTime: (rate: ArpRate) => string
   setArpeggiating: (active: boolean) => void
+  requestTransportStart?: (consumerId: string) => void
+  releaseTransport?: (consumerId: string) => void
 }
+
+const ARPEGGIATOR_CONSUMER_ID = 'arpeggiator'
 
 export function useArpeggiator({
   playNote,
@@ -22,6 +26,8 @@ export function useArpeggiator({
   getNoteTime,
   getToneTime,
   setArpeggiating,
+  requestTransportStart,
+  releaseTransport,
 }: UseArpeggiatorProps) {
   const [params, setParams] = useState<ArpeggiatorParams>(DEFAULT_ARPEGGIATOR_PARAMS)
   const heldNotesRef = useRef<number[]>([])
@@ -41,6 +47,9 @@ export function useArpeggiator({
   const paramsRef = useRef(params)
 
   // Keep refs updated
+  const requestTransportStartRef = useRef(requestTransportStart)
+  const releaseTransportRef = useRef(releaseTransport)
+
   useEffect(() => {
     playNoteRef.current = playNote
     stopNoteRef.current = stopNote
@@ -49,8 +58,10 @@ export function useArpeggiator({
     getNoteTimeRef.current = getNoteTime
     getToneTimeRef.current = getToneTime
     setArpeggiatingRef.current = setArpeggiating
+    requestTransportStartRef.current = requestTransportStart
+    releaseTransportRef.current = releaseTransport
     paramsRef.current = params
-  }, [playNote, stopNote, playArpNote, stopArpNote, getNoteTime, getToneTime, setArpeggiating, params])
+  }, [playNote, stopNote, playArpNote, stopArpNote, getNoteTime, getToneTime, setArpeggiating, requestTransportStart, releaseTransport, params])
 
   // Generate sequence based on pattern and octaves
   const generateSequence = useCallback((): number[] => {
@@ -100,12 +111,12 @@ export function useArpeggiator({
     if (isRunningRef.current) return
     isRunningRef.current = true
 
-    // Ensure transport is running
-    if (Tone.getTransport().state !== 'started') {
+    if (requestTransportStartRef.current) {
+      requestTransportStartRef.current(ARPEGGIATOR_CONSUMER_ID)
+    } else if (Tone.getTransport().state !== 'started') {
       Tone.getTransport().start()
     }
 
-    // Notify audio engine that arpeggiator is active
     setArpeggiatingRef.current(true)
 
     const toneTime = getToneTimeRef.current(paramsRef.current.rate)
@@ -147,11 +158,13 @@ export function useArpeggiator({
       loopRef.current = null
     }
 
-    // Stop current note
     stopCurrentNote()
 
-    // Notify audio engine that arpeggiator is no longer active
     setArpeggiatingRef.current(false)
+
+    if (releaseTransportRef.current) {
+      releaseTransportRef.current(ARPEGGIATOR_CONSUMER_ID)
+    }
 
     stopAllNotes()
   }, [stopAllNotes, stopCurrentNote])
