@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob, WaveformSelector, OctaveDisplay, ToggleButton } from '../Controls'
 import { WaveformType, DEFAULT_MASTER_PARAMS } from '../../types/synth.types'
@@ -18,7 +19,7 @@ interface MasterModuleProps {
   className?: string
 }
 
-export function MasterModule({
+export const MasterModule = memo(function MasterModule({
   volume,
   attack,
   release,
@@ -70,4 +71,4 @@ export function MasterModule({
       <ToggleButton label="Mono" value={mono} onChange={onMonoChange} size="sm" />
     </ModulePanel>
   )
-}
+})

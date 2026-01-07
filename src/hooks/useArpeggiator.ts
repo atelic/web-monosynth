@@ -6,6 +6,8 @@ interface UseArpeggiatorProps {
   playNote: (frequency: number) => void
   stopNote: (frequency: number) => void
   stopAllNotes: () => void
+  playArpNote: (frequency: number, time?: number) => void
+  stopArpNote: (frequency: number, time?: number) => void
   getNoteTime: (rate: ArpRate) => number
   getToneTime: (rate: ArpRate) => string
   setArpeggiating: (active: boolean) => void
@@ -15,6 +17,8 @@ export function useArpeggiator({
   playNote,
   stopNote,
   stopAllNotes,
+  playArpNote,
+  stopArpNote,
   getNoteTime,
   getToneTime,
   setArpeggiating,
@@ -29,6 +33,8 @@ export function useArpeggiator({
   // Use refs for callback functions to avoid stale closures in scheduled callbacks
   const playNoteRef = useRef(playNote)
   const stopNoteRef = useRef(stopNote)
+  const playArpNoteRef = useRef(playArpNote)
+  const stopArpNoteRef = useRef(stopArpNote)
   const getNoteTimeRef = useRef(getNoteTime)
   const getToneTimeRef = useRef(getToneTime)
   const setArpeggiatingRef = useRef(setArpeggiating)
@@ -38,11 +44,13 @@ export function useArpeggiator({
   useEffect(() => {
     playNoteRef.current = playNote
     stopNoteRef.current = stopNote
+    playArpNoteRef.current = playArpNote
+    stopArpNoteRef.current = stopArpNote
     getNoteTimeRef.current = getNoteTime
     getToneTimeRef.current = getToneTime
     setArpeggiatingRef.current = setArpeggiating
     paramsRef.current = params
-  }, [playNote, stopNote, getNoteTime, getToneTime, setArpeggiating, params])
+  }, [playNote, stopNote, playArpNote, stopArpNote, getNoteTime, getToneTime, setArpeggiating, params])
 
   // Generate sequence based on pattern and octaves
   const generateSequence = useCallback((): number[] => {
@@ -79,10 +87,10 @@ export function useArpeggiator({
     }
   }, [])
 
-  // Stop any currently playing note
-  const stopCurrentNote = useCallback(() => {
+  // Stop any currently playing note with optional time parameter
+  const stopCurrentNote = useCallback((time?: number) => {
     if (currentPlayingNoteRef.current !== null) {
-      stopNoteRef.current(currentPlayingNoteRef.current)
+      stopArpNoteRef.current(currentPlayingNoteRef.current, time)
       currentPlayingNoteRef.current = null
     }
   }, [])
@@ -103,36 +111,27 @@ export function useArpeggiator({
     const toneTime = getToneTimeRef.current(paramsRef.current.rate)
     currentIndexRef.current = 0
 
-    // Create a Tone.Loop for reliable repeating
     loopRef.current = new Tone.Loop((time) => {
       const sequence = generateSequence()
       if (sequence.length === 0) return
 
-      // Stop previous note
-      stopCurrentNote()
+      stopCurrentNote(time)
 
-      // Get current note
       const freq = sequence[currentIndexRef.current % sequence.length]
       currentPlayingNoteRef.current = freq
 
-      // Play the note - use Tone.Draw to sync with audio time
-      Tone.getDraw().schedule(() => {
-        playNoteRef.current(freq)
-      }, time)
+      playArpNoteRef.current(freq, time)
 
-      // Advance to next
       currentIndexRef.current = (currentIndexRef.current + 1) % sequence.length
     }, toneTime)
 
-    // Start the loop immediately
-    loopRef.current.start(0)
+    loopRef.current.start('+0')
 
-    // Play first note immediately
     const sequence = generateSequence()
     if (sequence.length > 0) {
       const freq = sequence[0]
       currentPlayingNoteRef.current = freq
-      playNoteRef.current(freq)
+      playArpNoteRef.current(freq)
       currentIndexRef.current = 1
     }
   }, [generateSequence, stopCurrentNote])
@@ -231,13 +230,13 @@ export function useArpeggiator({
     paramsRef.current = { ...paramsRef.current, octaves }
   }, [])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (loopRef.current) {
         loopRef.current.stop()
         loopRef.current.dispose()
       }
+      setArpeggiatingRef.current(false)
     }
   }, [])
 

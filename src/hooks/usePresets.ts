@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import {
   Preset,
   SynthPresetParams,
@@ -156,7 +156,10 @@ export function usePresets() {
     }
   }, [userPresets])
 
-  const allPresets = [...FACTORY_PRESETS, ...userPresets]
+  const allPresets = useMemo(
+    () => [...FACTORY_PRESETS, ...userPresets],
+    [userPresets]
+  )
 
   const getPresetsByCategory = useCallback(
     (category: PresetCategory) => {

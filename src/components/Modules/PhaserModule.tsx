@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob } from '../Controls'
 import { PhaserParams, DEFAULT_PHASER_PARAMS } from '../../types/synth.types'
 
@@ -8,7 +9,7 @@ interface PhaserModuleProps {
   onWetChange: (wet: number) => void
 }
 
-export function PhaserModule({
+export const PhaserModule = memo(function PhaserModule({
   params,
   onRateChange,
   onDepthChange,
@@ -52,4 +53,4 @@ export function PhaserModule({
       </div>
     </div>
   )
-}
+})

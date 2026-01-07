@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ModulePanel } from '../Layout/ModulePanel'
 import { Knob } from '../Controls'
 import { DEFAULT_EFFECT_PARAMS } from '../../types/synth.types'
@@ -12,7 +13,7 @@ interface DelayModuleProps {
   className?: string
 }
 
-export function DelayModule({
+export const DelayModule = memo(function DelayModule({
   time,
   feedback,
   wet,
@@ -53,4 +54,4 @@ export function DelayModule({
       />
     </ModulePanel>
   )
-}
+})

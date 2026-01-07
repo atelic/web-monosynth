@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Knob, ToggleButton, PitchWheel } from '../Controls'
 import { GlideParams, DEFAULT_GLIDE_PARAMS, DEFAULT_PITCH_BEND_RANGE } from '../../types/synth.types'
 
@@ -11,7 +12,7 @@ interface PitchModuleProps {
   onPitchBendRangeChange: (range: number) => void
 }
 
-export function PitchModule({
+export const PitchModule = memo(function PitchModule({
   glideParams,
   pitchBendValue,
   pitchBendRange,
@@ -71,4 +72,4 @@ export function PitchModule({
       </div>
     </div>
   )
-}
+})
