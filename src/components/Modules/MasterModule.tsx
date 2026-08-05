@@ -1,19 +1,17 @@
 import { memo } from 'react'
 import { ModulePanel } from '../Layout/ModulePanel'
-import { Knob, WaveformSelector, OctaveDisplay, ToggleButton } from '../Controls'
-import { WaveformType, DEFAULT_MASTER_PARAMS } from '../../types/synth.types'
+import { Knob, OctaveDisplay, ToggleButton } from '../Controls'
+import { DEFAULT_MASTER_PARAMS } from '../../types/synth.types'
 
 interface MasterModuleProps {
   volume: number
   attack: number
   release: number
-  waveform: WaveformType
   octave: number
   mono: boolean
   onVolumeChange: (value: number) => void
   onAttackChange: (value: number) => void
   onReleaseChange: (value: number) => void
-  onWaveformChange: (waveform: WaveformType) => void
   onOctaveChange: (octave: number) => void
   onMonoChange: (mono: boolean) => void
   className?: string
@@ -23,13 +21,11 @@ export const MasterModule = memo(function MasterModule({
   volume,
   attack,
   release,
-  waveform,
   octave,
   mono,
   onVolumeChange,
   onAttackChange,
   onReleaseChange,
-  onWaveformChange,
   onOctaveChange,
   onMonoChange,
   className = '',
@@ -66,7 +62,6 @@ export const MasterModule = memo(function MasterModule({
         displayValue={(v) => v.toFixed(2)}
         defaultValue={DEFAULT_MASTER_PARAMS.release}
       />
-      <WaveformSelector value={waveform} onChange={onWaveformChange} />
       <OctaveDisplay octave={octave} onOctaveChange={onOctaveChange} />
       <ToggleButton label="Mono" value={mono} onChange={onMonoChange} size="sm" />
     </ModulePanel>

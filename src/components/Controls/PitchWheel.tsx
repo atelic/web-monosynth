@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 interface PitchWheelProps {
   value: number
@@ -38,45 +38,53 @@ export function PitchWheel({
     [onChange]
   )
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.currentTarget.setPointerCapture(e.pointerId)
       setIsDragging(true)
       handleDrag(e.clientY)
     },
     [handleDrag]
   )
 
-  useEffect(() => {
-    if (!isDragging) return
-
-    const handleMouseMove = (e: MouseEvent) => {
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!isDragging) return
       handleDrag(e.clientY)
-    }
+    },
+    [handleDrag, isDragging]
+  )
 
-    const handleMouseUp = () => {
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId)
+      }
       setIsDragging(false)
       if (springBack) {
         onChange(0)
       }
       onRelease?.()
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, handleDrag, springBack, onChange, onRelease])
+    },
+    [onChange, onRelease, springBack]
+  )
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div
         ref={trackRef}
-        className="relative w-8 rounded bg-ableton-surface cursor-pointer overflow-hidden"
+        className="relative w-8 touch-none cursor-pointer overflow-hidden rounded bg-ableton-surface"
+        role="slider"
+        tabIndex={0}
+        aria-label={label}
+        aria-valuemin={-1}
+        aria-valuemax={1}
+        aria-valuenow={Number(value.toFixed(2))}
         style={{ height }}
-        onMouseDown={handleMouseDown}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {/* Center line */}
         <div className="absolute top-1/2 left-0 right-0 h-px bg-ableton-accent" />
@@ -84,8 +92,8 @@ export function PitchWheel({
         <div
           className="absolute left-1 right-1 bg-ableton-accent/30"
           style={{
-            top: value > 0 ? `${50 - (value * 50)}%` : '50%',
-            bottom: value < 0 ? `${50 + (value * 50)}%` : '50%',
+            top: value > 0 ? `${50 - value * 50}%` : '50%',
+            bottom: value < 0 ? `${50 + value * 50}%` : '50%',
           }}
         />
         {/* Track marks */}

@@ -51,7 +51,7 @@ export function SpectrumAnalyzer({
     const bufferLength = data.length
 
     // Clear canvas
-    ctx.fillStyle = '#141311'
+    ctx.fillStyle = '#101611'
     ctx.fillRect(0, 0, width, height)
 
     // Calculate bar width based on canvas size
@@ -74,12 +74,7 @@ export function SpectrumAnalyzer({
       const lightness = 38 + normalizedValue * 20
 
       ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`
-      ctx.fillRect(
-        i * (barWidth + barGap),
-        height - barHeight,
-        barWidth,
-        barHeight
-      )
+      ctx.fillRect(i * (barWidth + barGap), height - barHeight, barWidth, barHeight)
     }
 
     // Draw grid lines (fewer for compact)
@@ -114,7 +109,10 @@ export function SpectrumAnalyzer({
   const paddingClass = compact ? 'p-1.5' : 'p-3'
 
   return (
-    <div ref={containerRef} className={`rounded-lg bg-ableton-surface ${paddingClass} ${className}`}>
+    <div
+      ref={containerRef}
+      className={`rounded-lg bg-ableton-surface ${paddingClass} ${className}`}
+    >
       {!compact && (
         <h3 className="text-xs font-semibold text-ableton-text-secondary uppercase tracking-wider mb-2">
           Spectrum

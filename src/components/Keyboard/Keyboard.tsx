@@ -27,47 +27,49 @@ export function Keyboard({ activeKeys, onNoteOn, onNoteOff, className = '' }: Ke
     <div
       className={`rounded-lg border border-ableton-border bg-ableton-surface p-2 shadow-module md:p-3 ${className}`}
     >
-      <div className="relative rounded-md border border-ableton-border-light/60 bg-ableton-bg p-1.5 shadow-[inset_0_1px_16px_rgba(0,0,0,0.28)]">
-        {/* White keys */}
-        <div className="grid grid-cols-9 gap-1">
-          {whiteKeys.map((key) => (
-            <Key
-              key={key.code}
-              noteName={key.noteName}
-              keyCode={key.code}
-              isBlack={false}
-              isActive={activeKeys.has(key.code)}
-              onNoteOn={() => onNoteOn(key.code)}
-              onNoteOff={() => onNoteOff(key.code)}
-            />
-          ))}
-        </div>
+      <div className="overflow-x-auto rounded-md border border-ableton-border-light/60 bg-ableton-bg p-1.5 shadow-[inset_0_1px_16px_rgba(0,0,0,0.28)]">
+        <div className="relative min-w-[640px] md:min-w-0">
+          {/* White keys */}
+          <div className="grid grid-cols-9 gap-1">
+            {whiteKeys.map((key) => (
+              <Key
+                key={key.code}
+                noteName={key.noteName}
+                keyCode={key.code}
+                isBlack={false}
+                isActive={activeKeys.has(key.code)}
+                onNoteOn={() => onNoteOn(key.code)}
+                onNoteOff={() => onNoteOff(key.code)}
+              />
+            ))}
+          </div>
 
-        {/* Black keys overlay */}
-        <div className="pointer-events-none absolute left-1.5 right-1.5 top-1.5 grid grid-cols-9 gap-1">
-          {whiteKeys.map((_, index) => {
-            const blackKey = blackKeys.find((bk) => blackKeyPositions[bk.code] === index)
-            if (!blackKey) {
+          {/* Black keys overlay */}
+          <div className="pointer-events-none absolute left-1.5 right-1.5 top-1.5 grid grid-cols-9 gap-1">
+            {whiteKeys.map((_, index) => {
+              const blackKey = blackKeys.find((bk) => blackKeyPositions[bk.code] === index)
+              if (!blackKey) {
               return <div key={`spacer-${index}`} className="h-16" />
             }
             return (
-              <div key={blackKey.code} className="pointer-events-auto px-1">
+              <div key={blackKey.code} className="pointer-events-none relative h-16">
                 <Key
-                  noteName={blackKey.noteName}
-                  keyCode={blackKey.code}
-                  isBlack={true}
-                  isActive={activeKeys.has(blackKey.code)}
-                  onNoteOn={() => onNoteOn(blackKey.code)}
-                  onNoteOff={() => onNoteOff(blackKey.code)}
-                />
-              </div>
-            )
-          })}
+                    noteName={blackKey.noteName}
+                    keyCode={blackKey.code}
+                    isBlack={true}
+                    isActive={activeKeys.has(blackKey.code)}
+                    onNoteOn={() => onNoteOn(blackKey.code)}
+                    onNoteOff={() => onNoteOff(blackKey.code)}
+                  />
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
 
       <p className="mt-2 text-center font-mono text-[10px] text-ableton-text-muted">
-          A-L play naturals / W E T Y U O play sharps
+        A-L play naturals / W E T Y U O play sharps
       </p>
     </div>
   )

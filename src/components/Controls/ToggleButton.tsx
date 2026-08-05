@@ -11,13 +11,15 @@ export function ToggleButton({ label, value, onChange, size = 'md' }: ToggleButt
   return (
     <div className="flex flex-col items-center gap-1">
       <button
+        type="button"
+        aria-pressed={value}
         className={`
           ${sizeClasses}
           rounded font-bold uppercase tracking-wide transition-all
           ${
             value
-              ? 'bg-ableton-green text-ableton-bg ring-2 ring-ableton-green/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]'
-              : 'bg-ableton-bg text-ableton-text-muted hover:bg-ableton-surface-light hover:text-ableton-text-dim'
+              ? 'bg-ableton-orange text-ableton-bg shadow-[inset_0_1px_0_rgba(255,255,255,0.2),inset_0_-3px_0_rgba(78,42,13,0.24)]'
+              : 'border border-ableton-border-light bg-ableton-bg text-ableton-text-muted hover:bg-ableton-surface-light hover:text-ableton-text-dim'
           }
         `}
         onClick={() => onChange(!value)}

@@ -21,6 +21,8 @@ export function SegmentedSelector<T extends string | number>({
         {options.map((option) => (
           <button
             key={String(option.value)}
+            type="button"
+            aria-pressed={value === option.value}
             className={`
               ${sizeClasses}
               font-bold uppercase tracking-wide transition-all border-r border-ableton-border last:border-r-0

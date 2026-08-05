@@ -11,12 +11,7 @@ const waveforms: { type: WaveformType; label: string; icon: React.ReactNode }[] 
     label: 'Sine',
     icon: (
       <svg viewBox="0 0 24 12" className="w-6 h-3">
-        <path
-          d="M0 6 Q6 0 12 6 Q18 12 24 6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
+        <path d="M0 6 Q6 0 12 6 Q18 12 24 6" fill="none" stroke="currentColor" strokeWidth="1.5" />
       </svg>
     ),
   },
@@ -25,7 +20,12 @@ const waveforms: { type: WaveformType; label: string; icon: React.ReactNode }[] 
     label: 'Triangle',
     icon: (
       <svg viewBox="0 0 24 12" className="w-6 h-3">
-        <path d="M0 6 L6 0 L12 6 L18 12 L24 6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path
+          d="M0 6 L6 0 L12 6 L18 12 L24 6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
       </svg>
     ),
   },
@@ -62,6 +62,9 @@ export function WaveformSelector({ value, onChange }: WaveformSelectorProps) {
         {waveforms.map(({ type, label, icon }) => (
           <button
             key={type}
+            type="button"
+            aria-pressed={value === type}
+            aria-label={label}
             onClick={() => onChange(type)}
             className={`flex flex-col items-center gap-1 px-2 py-1.5 rounded transition-all ${
               value === type

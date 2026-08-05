@@ -33,9 +33,22 @@ export function PresetModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-ableton-surface rounded-lg p-6 w-80 shadow-xl">
-        <h2 className="text-lg font-semibold text-ableton-text mb-4">Save Preset</h2>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#12120f]/80 p-4"
+      role="presentation"
+      onMouseDown={onCancel}
+    >
+      <div
+        className="w-80 border border-ableton-border-light bg-ableton-surface p-6 shadow-module"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="save-preset-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <p className="brand-model">PATCH MEMORY</p>
+        <h2 id="save-preset-title" className="mb-5 mt-2 text-lg font-semibold text-ableton-text">
+          Store preset
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name input */}
@@ -45,7 +58,7 @@ export function PresetModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-ableton-bg rounded text-ableton-text text-sm focus:outline-none focus:ring-2 focus:ring-ableton-orange"
+              className="w-full border border-ableton-border bg-ableton-bg px-3 py-2 text-sm text-ableton-text focus:outline-none"
               placeholder="My Preset"
               autoFocus
             />

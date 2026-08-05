@@ -76,17 +76,17 @@ export function PresetManager({
   }, [onInitPreset])
 
   return (
-    <div className="rounded-lg border border-ableton-border bg-ableton-surface p-3 shadow-module">
-      <div className="mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+    <div className="preset-manager rounded-lg border border-ableton-border bg-ableton-surface p-3 shadow-module">
+      <div className="preset-manager__header mb-3 flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
         <h3 className="module-title mb-0">Presets</h3>
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ableton-text-muted">
           {filteredPresets.length} available
         </p>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[1fr_1.2fr_auto] lg:items-start">
+      <div className="preset-manager__body grid gap-3 lg:grid-cols-[1fr_1.2fr_auto] lg:items-start">
         {/* Category tabs */}
-        <div className="flex gap-1 overflow-x-auto rounded bg-ableton-bg p-1 ring-1 ring-ableton-border-light/70">
+        <div className="preset-categories flex gap-1 overflow-x-auto rounded bg-ableton-bg p-1 ring-1 ring-ableton-border-light/70">
           <button
             className={`rounded px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors ${
               activeCategory === 'all'
@@ -113,7 +113,7 @@ export function PresetManager({
         </div>
 
         {/* Preset selector */}
-        <div className="relative">
+        <div className="preset-select relative">
           <button
             className="flex w-full items-center justify-between rounded bg-ableton-bg px-3 py-2.5 text-left text-sm text-ableton-text ring-1 ring-ableton-border-light/70 transition-colors hover:bg-ableton-surface-light"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -154,7 +154,7 @@ export function PresetManager({
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-2">
+        <div className="preset-actions flex gap-2">
           <button
             className="flex-1 rounded bg-ableton-bg px-3 py-2.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-ableton-text-secondary transition-colors hover:bg-ableton-orange hover:text-ableton-bg"
             onClick={handleInit}

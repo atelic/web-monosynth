@@ -32,8 +32,10 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
   if (isBlack) {
     return (
       <button
+        type="button"
+        aria-label={`${noteName}, computer key ${keyLabel}`}
         className={`
-          relative z-10 -mx-2 flex h-14 flex-col items-center justify-end pb-1
+          pointer-events-auto absolute right-0 top-0 z-10 flex h-14 w-8 translate-x-1/2 flex-col items-center justify-end pb-1
           rounded-b transition-all duration-100 touch-none select-none
           ${
             isActive
@@ -42,12 +44,13 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
           }
           border border-ableton-border-light
         `}
-        onMouseDown={handleNoteOn}
-        onMouseUp={handleNoteOff}
-        onMouseLeave={handleNoteOff}
-        onTouchStart={handleNoteOn}
-        onTouchEnd={handleNoteOff}
-        onTouchCancel={handleNoteOff}
+        onPointerDown={(event) => {
+          event.currentTarget.setPointerCapture(event.pointerId)
+          handleNoteOn()
+        }}
+        onPointerUp={handleNoteOff}
+        onPointerCancel={handleNoteOff}
+        onLostPointerCapture={handleNoteOff}
       >
         <span
           className={`font-mono text-[10px] ${isActive ? 'text-ableton-bg' : 'text-ableton-text-muted'}`}
@@ -60,6 +63,8 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
 
   return (
     <button
+      type="button"
+      aria-label={`${noteName}, computer key ${keyLabel}`}
       className={`
         flex h-full min-h-20 w-full flex-col items-center justify-end pb-2 md:min-h-24
         rounded-b transition-all duration-100 touch-none select-none
@@ -70,12 +75,13 @@ export function Key({ noteName, keyCode, isBlack, isActive, onNoteOn, onNoteOff 
         }
         border border-[#9c875f] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]
       `}
-      onMouseDown={handleNoteOn}
-      onMouseUp={handleNoteOff}
-      onMouseLeave={handleNoteOff}
-      onTouchStart={handleNoteOn}
-      onTouchEnd={handleNoteOff}
-      onTouchCancel={handleNoteOff}
+      onPointerDown={(event) => {
+        event.currentTarget.setPointerCapture(event.pointerId)
+        handleNoteOn()
+      }}
+      onPointerUp={handleNoteOff}
+      onPointerCancel={handleNoteOff}
+      onLostPointerCapture={handleNoteOff}
     >
       <span
         className={`mb-1 font-mono text-xs ${isActive ? 'text-ableton-bg' : 'text-ableton-bg/70'}`}

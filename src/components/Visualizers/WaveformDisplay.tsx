@@ -46,11 +46,11 @@ export function WaveformDisplay({
     const dpr = window.devicePixelRatio
 
     // Clear canvas
-    ctx.fillStyle = '#141311'
+    ctx.fillStyle = '#101611'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Draw grid lines (fewer for compact)
-    ctx.strokeStyle = '#4b4131'
+    ctx.strokeStyle = '#405044'
     ctx.lineWidth = 1
     ctx.beginPath()
     // Horizontal center line
@@ -66,7 +66,7 @@ export function WaveformDisplay({
     ctx.stroke()
 
     // Draw waveform
-    ctx.strokeStyle = '#d8903f'
+    ctx.strokeStyle = '#d78a37'
     ctx.lineWidth = (compact ? 1.5 : 2) * dpr
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -99,11 +99,11 @@ export function WaveformDisplay({
     if (!ctx) return
 
     // Clear and draw flat line
-    ctx.fillStyle = '#141311'
+    ctx.fillStyle = '#101611'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Draw grid
-    ctx.strokeStyle = '#4b4131'
+    ctx.strokeStyle = '#405044'
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(0, canvas.height / 2)
@@ -117,7 +117,7 @@ export function WaveformDisplay({
     ctx.stroke()
 
     // Flat center line
-    ctx.strokeStyle = '#d8903f'
+    ctx.strokeStyle = '#d78a37'
     ctx.lineWidth = (compact ? 1.5 : 2) * window.devicePixelRatio
     ctx.beginPath()
     ctx.moveTo(0, canvas.height / 2)

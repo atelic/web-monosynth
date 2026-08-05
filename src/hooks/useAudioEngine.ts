@@ -26,6 +26,7 @@ export function useAudioEngine() {
     isInitialized: false,
     activeNotes: 0,
   })
+  const isInitializingRef = useRef(false)
 
   // Polyphonic synth (4 voices)
   const polySynthRef = useRef<Tone.PolySynth | null>(null)
@@ -93,12 +94,19 @@ export function useAudioEngine() {
   const lfoToFilterRef = useRef<Tone.Gain | null>(null)
 
   const initializeAudio = useCallback(async () => {
-    if (state.isInitialized) return
+    if (state.isInitialized || isInitializingRef.current) return
 
-    await Tone.start()
+    isInitializingRef.current = true
 
-    // Create master mixer (combines poly synth + sub + noise)
-    masterMixerRef.current = new Tone.Gain(1)
+    try {
+      await Tone.start()
+
+      if (Tone.getContext().state !== 'running') {
+        throw new Error('Your browser prevented the audio context from starting.')
+      }
+
+      // Create master mixer (combines poly synth + sub + noise)
+      masterMixerRef.current = new Tone.Gain(1)
 
     // Create 4-voice polyphonic synth
     polySynthRef.current = new Tone.PolySynth(Tone.Synth, {
@@ -264,7 +272,10 @@ export function useAudioEngine() {
     lfoRef.current.start()
     chorusRef.current.start()
 
-    setState({ isInitialized: true, activeNotes: 0 })
+      setState({ isInitialized: true, activeNotes: 0 })
+    } finally {
+      isInitializingRef.current = false
+    }
   }, [state.isInitialized])
 
   // Calculate the actual frequency with pitch bend applied
