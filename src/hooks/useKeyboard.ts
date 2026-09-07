@@ -18,8 +18,12 @@ export function useKeyboard({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (!enabled) return
-      if (e.repeat) return
+      if (!enabled || e.repeat || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
+      if (
+        e.target instanceof HTMLElement &&
+        (e.target.isContentEditable || e.target.closest('input, textarea, select, dialog'))
+      )
+        return
 
       // Prevent default for synth keys to avoid browser shortcuts
       if (NOTE_KEY_CODES.has(e.code) || e.code === 'KeyZ' || e.code === 'KeyX') {
@@ -48,8 +52,7 @@ export function useKeyboard({
     (e: KeyboardEvent) => {
       if (!enabled) return
 
-      if (NOTE_KEY_CODES.has(e.code)) {
-        activeKeysRef.current.delete(e.code)
+      if (activeKeysRef.current.delete(e.code)) {
         onNoteOff(e.code)
       }
     },

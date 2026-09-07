@@ -31,7 +31,6 @@ export function Knob({
   displayValue,
   defaultValue,
 }: KnobProps) {
-  const knobRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const dragStartY = useRef(0)
   const dragStartValue = useRef(0)
@@ -109,7 +108,6 @@ export function Knob({
     <div className="knob-container">
       <span className="knob-label">{label}</span>
       <div
-        ref={knobRef}
         className={`${sizeClasses[size].knob} knob-control relative cursor-grab select-none touch-none active:cursor-grabbing ${isDragging ? 'is-dragging' : ''}`}
         role="slider"
         tabIndex={0}
@@ -122,6 +120,7 @@ export function Knob({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={cancelPointer}
+        onLostPointerCapture={cancelPointer}
         onKeyDown={handleKeyDown}
         onDoubleClick={handleDoubleClick}
         title={

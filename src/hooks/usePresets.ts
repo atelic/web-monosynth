@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   Preset,
   SynthPresetParams,
@@ -34,13 +34,12 @@ export const DEFAULT_PRESET_PARAMS: SynthPresetParams = {
   pitchBendRange: DEFAULT_PITCH_BEND_RANGE,
 }
 
-// Factory presets will be imported from constants
 import { FACTORY_PRESETS } from '../constants/factoryPresets'
 
 // Migration helper for old presets that might have PWM/sync fields
 function migratePresetParams(params: Record<string, unknown>): SynthPresetParams {
   const migrated = { ...DEFAULT_PRESET_PARAMS }
-  
+
   // Safely copy over existing valid fields
   if (params.master && typeof params.master === 'object') {
     const master = params.master as Record<string, unknown>
@@ -48,7 +47,9 @@ function migratePresetParams(params: Record<string, unknown>): SynthPresetParams
       volume: typeof master.volume === 'number' ? master.volume : DEFAULT_MASTER_PARAMS.volume,
       attack: typeof master.attack === 'number' ? master.attack : DEFAULT_MASTER_PARAMS.attack,
       release: typeof master.release === 'number' ? master.release : DEFAULT_MASTER_PARAMS.release,
-      waveform: master.waveform as typeof DEFAULT_MASTER_PARAMS.waveform || DEFAULT_MASTER_PARAMS.waveform,
+      waveform:
+        (master.waveform as typeof DEFAULT_MASTER_PARAMS.waveform) ||
+        DEFAULT_MASTER_PARAMS.waveform,
       octave: typeof master.octave === 'number' ? master.octave : DEFAULT_MASTER_PARAMS.octave,
       mono: typeof master.mono === 'boolean' ? master.mono : DEFAULT_MASTER_PARAMS.mono,
     }
@@ -61,11 +62,21 @@ function migratePresetParams(params: Record<string, unknown>): SynthPresetParams
   if (params.oscillator && typeof params.oscillator === 'object') {
     const osc = params.oscillator as Record<string, unknown>
     migrated.oscillator = {
-      waveform: osc.waveform as typeof DEFAULT_OSCILLATOR_PARAMS.waveform || DEFAULT_OSCILLATOR_PARAMS.waveform,
-      subOscLevel: typeof osc.subOscLevel === 'number' ? osc.subOscLevel : DEFAULT_OSCILLATOR_PARAMS.subOscLevel,
-      subOscOctave: osc.subOscOctave as typeof DEFAULT_OSCILLATOR_PARAMS.subOscOctave || DEFAULT_OSCILLATOR_PARAMS.subOscOctave,
-      noiseLevel: typeof osc.noiseLevel === 'number' ? osc.noiseLevel : DEFAULT_OSCILLATOR_PARAMS.noiseLevel,
-      noiseType: osc.noiseType as typeof DEFAULT_OSCILLATOR_PARAMS.noiseType || DEFAULT_OSCILLATOR_PARAMS.noiseType,
+      waveform:
+        (osc.waveform as typeof DEFAULT_OSCILLATOR_PARAMS.waveform) ||
+        DEFAULT_OSCILLATOR_PARAMS.waveform,
+      subOscLevel:
+        typeof osc.subOscLevel === 'number'
+          ? osc.subOscLevel
+          : DEFAULT_OSCILLATOR_PARAMS.subOscLevel,
+      subOscOctave:
+        (osc.subOscOctave as typeof DEFAULT_OSCILLATOR_PARAMS.subOscOctave) ||
+        DEFAULT_OSCILLATOR_PARAMS.subOscOctave,
+      noiseLevel:
+        typeof osc.noiseLevel === 'number' ? osc.noiseLevel : DEFAULT_OSCILLATOR_PARAMS.noiseLevel,
+      noiseType:
+        (osc.noiseType as typeof DEFAULT_OSCILLATOR_PARAMS.noiseType) ||
+        DEFAULT_OSCILLATOR_PARAMS.noiseType,
     }
   }
 
@@ -75,15 +86,19 @@ function migratePresetParams(params: Record<string, unknown>): SynthPresetParams
 
   // Filter out PWM and pitch from modRouting - only filterCutoff is supported now
   if (params.modRouting && Array.isArray(params.modRouting)) {
-    const filterCutoffRouting = (params.modRouting as Array<Record<string, unknown>>)
-      .find((r) => r.target === 'filterCutoff')
-    
+    const filterCutoffRouting = (params.modRouting as Array<Record<string, unknown>>).find(
+      (r) => r.target === 'filterCutoff'
+    )
+
     if (filterCutoffRouting) {
-      migrated.modRouting = [{
-        target: 'filterCutoff' as const,
-        amount: typeof filterCutoffRouting.amount === 'number' ? filterCutoffRouting.amount : 0,
-        enabled: typeof filterCutoffRouting.enabled === 'boolean' ? filterCutoffRouting.enabled : false,
-      }]
+      migrated.modRouting = [
+        {
+          target: 'filterCutoff' as const,
+          amount: typeof filterCutoffRouting.amount === 'number' ? filterCutoffRouting.amount : 0,
+          enabled:
+            typeof filterCutoffRouting.enabled === 'boolean' ? filterCutoffRouting.enabled : false,
+        },
+      ]
     } else {
       migrated.modRouting = [{ target: 'filterCutoff', amount: 0, enabled: false }]
     }
@@ -118,19 +133,14 @@ function migratePresetParams(params: Record<string, unknown>): SynthPresetParams
   }
 
   // Add pitchBendRange if missing
-  migrated.pitchBendRange = typeof params.pitchBendRange === 'number' 
-    ? params.pitchBendRange 
-    : DEFAULT_PITCH_BEND_RANGE
+  migrated.pitchBendRange =
+    typeof params.pitchBendRange === 'number' ? params.pitchBendRange : DEFAULT_PITCH_BEND_RANGE
 
   return migrated
 }
 
 export function usePresets() {
-  const [userPresets, setUserPresets] = useState<Preset[]>([])
-  const [currentPresetId, setCurrentPresetId] = useState<string | null>(null)
-
-  // Load user presets from localStorage on mount
-  useEffect(() => {
+  const [userPresets, setUserPresets] = useState<Preset[]>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
@@ -140,33 +150,27 @@ export function usePresets() {
           ...preset,
           params: migratePresetParams(preset.params as unknown as Record<string, unknown>),
         }))
-        setUserPresets(migrated)
+        return migrated
       }
     } catch (e) {
       console.error('Failed to load presets from localStorage:', e)
     }
-  }, [])
+    return []
+  })
+  const [currentPresetId, setCurrentPresetId] = useState<string | null>(null)
+  const persistedPresets = useRef(userPresets)
 
-  // Save user presets to localStorage when they change
   useEffect(() => {
+    if (persistedPresets.current === userPresets) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userPresets))
+      persistedPresets.current = userPresets
     } catch (e) {
       console.error('Failed to save presets to localStorage:', e)
     }
   }, [userPresets])
 
-  const allPresets = useMemo(
-    () => [...FACTORY_PRESETS, ...userPresets],
-    [userPresets]
-  )
-
-  const getPresetsByCategory = useCallback(
-    (category: PresetCategory) => {
-      return allPresets.filter((p) => p.category === category)
-    },
-    [allPresets]
-  )
+  const allPresets = useMemo(() => [...FACTORY_PRESETS, ...userPresets], [userPresets])
 
   const getPresetById = useCallback(
     (id: string) => {
@@ -178,7 +182,7 @@ export function usePresets() {
   const savePreset = useCallback(
     (name: string, category: PresetCategory, params: SynthPresetParams) => {
       const newPreset: Preset = {
-        id: `user-${Date.now()}`,
+        id: `user-${crypto.randomUUID()}`,
         name,
         category,
         params,
@@ -186,15 +190,6 @@ export function usePresets() {
       setUserPresets((prev) => [...prev, newPreset])
       setCurrentPresetId(newPreset.id)
       return newPreset
-    },
-    []
-  )
-
-  const updatePreset = useCallback(
-    (id: string, params: Partial<Preset>) => {
-      setUserPresets((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, ...params } : p))
-      )
     },
     []
   )
@@ -233,10 +228,8 @@ export function usePresets() {
     userPresets,
     factoryPresets: FACTORY_PRESETS,
     currentPresetId,
-    getPresetsByCategory,
     getPresetById,
     savePreset,
-    updatePreset,
     deletePreset,
     loadPreset,
     initPreset,

@@ -1,6 +1,12 @@
 import { memo } from 'react'
 import { Knob, ToggleButton, SegmentedSelector } from '../Controls'
-import { LFOWaveform, LFOParams, ModulationRouting, ModulationTarget, DEFAULT_LFO_PARAMS } from '../../types/synth.types'
+import {
+  LFOWaveform,
+  LFOParams,
+  ModulationRouting,
+  ModulationTarget,
+  DEFAULT_LFO_PARAMS,
+} from '../../types/synth.types'
 
 interface LFOModuleProps {
   lfoParams: LFOParams
@@ -28,19 +34,9 @@ export const LFOModule = memo(function LFOModule({
   onRoutingChange,
   className = '',
 }: LFOModuleProps) {
-  const getRouting = (target: ModulationTarget): ModulationRouting => {
-    return modRouting.find((r) => r.target === target) || { target, amount: 0, enabled: false }
-  }
-
-  const handleRoutingToggle = (target: ModulationTarget) => {
-    const routing = getRouting(target)
-    onRoutingChange(target, routing.amount, !routing.enabled)
-  }
-
-  const handleRoutingAmountChange = (target: ModulationTarget, amount: number) => {
-    const routing = getRouting(target)
-    onRoutingChange(target, amount, routing.enabled)
-  }
+  const routing = modRouting.find((route) => route.target === 'filterCutoff')
+  const amount = routing?.amount ?? 0
+  const enabled = routing?.enabled ?? false
 
   return (
     <div className={`bg-ableton-surface rounded-lg p-3 ${className}`}>
@@ -48,7 +44,7 @@ export const LFOModule = memo(function LFOModule({
         LFO
       </h3>
 
-      <div className="space-y-3">
+      <div className="lfo-controls">
         {/* Main LFO controls */}
         <div className="flex items-center justify-center gap-4">
           <Knob
@@ -70,6 +66,15 @@ export const LFOModule = memo(function LFOModule({
             size="sm"
             defaultValue={DEFAULT_LFO_PARAMS.depth}
           />
+          <Knob
+            label="Amount"
+            value={amount}
+            min={0}
+            max={1}
+            onChange={(value) => onRoutingChange('filterCutoff', value, enabled)}
+            size="sm"
+            defaultValue={0}
+          />
         </div>
 
         {/* Waveform selector */}
@@ -83,29 +88,13 @@ export const LFOModule = memo(function LFOModule({
           />
         </div>
 
-        {/* Modulation routing - Filter cutoff only */}
-        <div className="border-t border-ableton-bg pt-3">
-          <div className="text-xs text-ableton-text-secondary mb-3 text-center">Routing</div>
-          <div className="flex justify-center">
-            {/* Filter Cutoff */}
-            <div className="flex flex-col items-center gap-2">
-              <ToggleButton
-                label=""
-                value={getRouting('filterCutoff').enabled}
-                onChange={() => handleRoutingToggle('filterCutoff')}
-                size="sm"
-              />
-              <Knob
-                label="Filter"
-                value={getRouting('filterCutoff').amount}
-                min={0}
-                max={1}
-                onChange={(v) => handleRoutingAmountChange('filterCutoff', v)}
-                size="sm"
-                defaultValue={0}
-              />
-            </div>
-          </div>
+        <div className="flex justify-center">
+          <ToggleButton
+            label="To filter"
+            value={enabled}
+            onChange={(value) => onRoutingChange('filterCutoff', amount, value)}
+            size="sm"
+          />
         </div>
       </div>
     </div>

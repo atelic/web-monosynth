@@ -47,10 +47,11 @@ export const TempoModule = memo(function TempoModule({
               px-3 py-2 rounded text-xs font-medium uppercase tracking-wide transition-all
               ${
                 isPlaying
-                  ? 'bg-green-600 text-white'
+                  ? 'bg-ableton-orange text-ableton-bg'
                   : 'bg-ableton-surface-light text-ableton-text-secondary hover:bg-ableton-orange hover:text-ableton-bg'
               }
             `}
+            aria-pressed={isPlaying}
             onClick={onToggleTransport}
           >
             {isPlaying ? 'Stop' : 'Play'}

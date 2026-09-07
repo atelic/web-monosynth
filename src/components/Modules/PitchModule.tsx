@@ -1,6 +1,10 @@
 import { memo } from 'react'
 import { Knob, ToggleButton, PitchWheel } from '../Controls'
-import { GlideParams, DEFAULT_GLIDE_PARAMS, DEFAULT_PITCH_BEND_RANGE } from '../../types/synth.types'
+import {
+  GlideParams,
+  DEFAULT_GLIDE_PARAMS,
+  DEFAULT_PITCH_BEND_RANGE,
+} from '../../types/synth.types'
 
 interface PitchModuleProps {
   glideParams: GlideParams
@@ -31,31 +35,28 @@ export const PitchModule = memo(function PitchModule({
 
       <div className="flex items-start justify-center gap-4">
         {/* Pitch Bend Wheel */}
-        <div className="flex flex-col items-center gap-2">
-          <PitchWheel
-            value={pitchBendValue}
-            onChange={onPitchBendChange}
-            label="BEND"
-            height={84}
-            springBack={true}
-          />
-          <Knob
-            label="Range"
-            value={pitchBendRange}
-            min={1}
-            max={12}
-            onChange={onPitchBendRangeChange}
-            size="sm"
-            displayValue={(v: number) => `${Math.round(v)} st`}
-            defaultValue={DEFAULT_PITCH_BEND_RANGE}
-          />
-        </div>
+        <PitchWheel
+          value={pitchBendValue}
+          onChange={onPitchBendChange}
+          label="BEND"
+          height={84}
+          springBack={true}
+        />
+        <Knob
+          label="Range"
+          value={pitchBendRange}
+          min={1}
+          max={12}
+          onChange={onPitchBendRangeChange}
+          size="sm"
+          displayValue={(v: number) => `${Math.round(v)} st`}
+          defaultValue={DEFAULT_PITCH_BEND_RANGE}
+        />
 
         {/* Glide/Portamento */}
         <div className="flex flex-col items-center gap-3">
-          <div className="text-xs text-ableton-text-secondary">Glide</div>
           <ToggleButton
-            label=""
+            label="Glide"
             value={glideParams.enabled}
             onChange={onGlideEnabledChange}
             size="sm"

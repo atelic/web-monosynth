@@ -54,21 +54,18 @@ function StartOverlay({ onStart }: { onStart: () => Promise<void> }) {
         <div className="power-console__rail" aria-hidden="true" />
         <div className="power-console__face">
           <div className="power-console__identity">
-            <p className="brand-model">ATELIC INSTRUMENTS / MODEL P-4</p>
-            <h1 className="start-title">Polyphonic Synthesizer</h1>
+            <h1 className="start-title">
+              Polysynth <span>P-4</span>
+            </h1>
+            <p className="start-copy">A polyphonic instrument for your browser.</p>
           </div>
           <div className="power-console__controls">
-            <button
-              type="button"
-              onClick={handleStart}
-              className="start-display"
-              disabled={bootState === 'starting'}
-            >
+            <div role="status" className="start-display">
               <span
                 className={`status-dot ${bootState === 'starting' ? 'status-dot--starting' : 'status-dot--idle'}`}
               />
               <span>{statusLabel}</span>
-            </button>
+            </div>
             <button
               type="button"
               onClick={handleStart}
@@ -118,13 +115,12 @@ function SynthUI() {
   })
 
   return (
-    <div className="synth-shell min-h-[100dvh] bg-ableton-bg p-2 sm:p-3 lg:p-5">
+    <div className="synth-shell min-h-[100dvh] bg-ableton-bg p-2 sm:p-3">
       <div className="synth-chassis">
         <header className="synth-header">
           <div className="brand-block">
-            <p className="brand-model">ATELIC INSTRUMENTS</p>
             <h1 className="brand-title">
-              POLYSYNTH <span>P-4</span>
+              Polysynth <span>P-4</span>
             </h1>
           </div>
           <div className="preset-strip">
@@ -345,8 +341,8 @@ function SynthUI() {
         </div>
 
         <footer className="synth-footer">
-          <span>Web audio instrument</span>
-          <span>React / Tone.js</span>
+          <span>Atelic Instruments · P-4</span>
+          <span>Shift + drag for fine control · Double-click to reset</span>
         </footer>
       </div>
     </div>

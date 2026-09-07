@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PresetCategory } from '../../types/synth.types'
 
 interface PresetModalProps {
@@ -22,6 +22,13 @@ export function PresetModal({
   initialName = '',
   initialCategory = 'user',
 }: PresetModalProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  useEffect(() => {
+    const dialog = dialogRef.current!
+    dialog.showModal()
+    return () => dialog.close()
+  }, [])
+
   const [name, setName] = useState(initialName)
   const [category, setCategory] = useState<PresetCategory>(initialCategory)
 
@@ -33,19 +40,16 @@ export function PresetModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#12120f]/80 p-4"
-      role="presentation"
-      onMouseDown={onCancel}
+    <dialog
+      ref={dialogRef}
+      className="preset-dialog w-80 border border-ableton-border-light bg-ableton-surface p-6 text-ableton-text shadow-module"
+      aria-labelledby="save-preset-title"
+      onCancel={onCancel}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onCancel()
+      }}
     >
-      <div
-        className="w-80 border border-ableton-border-light bg-ableton-surface p-6 shadow-module"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="save-preset-title"
-        onMouseDown={(event) => event.stopPropagation()}
-      >
-        <p className="brand-model">PATCH MEMORY</p>
+      <div>
         <h2 id="save-preset-title" className="mb-5 mt-2 text-lg font-semibold text-ableton-text">
           Store preset
         </h2>
@@ -53,12 +57,15 @@ export function PresetModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name input */}
           <div>
-            <label className="block text-xs text-ableton-text-secondary mb-1">Name</label>
+            <label htmlFor="preset-name" className="block text-xs text-ableton-text-secondary mb-1">
+              Name
+            </label>
             <input
+              id="preset-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-ableton-border bg-ableton-bg px-3 py-2 text-sm text-ableton-text focus:outline-none"
+              className="w-full border border-ableton-border bg-ableton-bg px-3 py-2 text-sm text-ableton-text "
               placeholder="My Preset"
               autoFocus
             />
@@ -77,6 +84,7 @@ export function PresetModal({
                       ? 'bg-ableton-orange text-ableton-bg'
                       : 'bg-ableton-bg text-ableton-text-secondary hover:bg-ableton-surface-light'
                   }`}
+                  aria-pressed={category === cat.value}
                   onClick={() => setCategory(cat.value)}
                 >
                   {cat.label}
@@ -104,6 +112,6 @@ export function PresetModal({
           </div>
         </form>
       </div>
-    </div>
+    </dialog>
   )
 }

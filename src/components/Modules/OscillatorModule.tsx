@@ -1,6 +1,11 @@
 import { memo } from 'react'
 import { Knob, WaveformSelector, SegmentedSelector } from '../Controls'
-import { WaveformType, NoiseType, OscillatorParams, DEFAULT_OSCILLATOR_PARAMS } from '../../types/synth.types'
+import {
+  WaveformType,
+  NoiseType,
+  OscillatorParams,
+  DEFAULT_OSCILLATOR_PARAMS,
+} from '../../types/synth.types'
 
 interface OscillatorModuleProps {
   params: OscillatorParams
@@ -35,10 +40,9 @@ export const OscillatorModule = memo(function OscillatorModule({
 
         {/* Sub Oscillator */}
         <div className="border-t border-ableton-bg pt-3">
-          <div className="text-xs text-ableton-text-secondary mb-2 text-center">Sub Osc</div>
           <div className="flex items-center justify-center gap-4">
             <Knob
-              label="Level"
+              label="Sub Osc"
               value={params.subOscLevel}
               min={0}
               max={1}
@@ -61,10 +65,9 @@ export const OscillatorModule = memo(function OscillatorModule({
 
         {/* Noise */}
         <div className="border-t border-ableton-bg pt-3">
-          <div className="text-xs text-ableton-text-secondary mb-2 text-center">Noise</div>
           <div className="flex items-center justify-center gap-4">
             <Knob
-              label="Level"
+              label="Noise"
               value={params.noiseLevel}
               min={0}
               max={1}
